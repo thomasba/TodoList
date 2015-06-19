@@ -12,6 +12,7 @@ import javafx.stage.Stage;
 
 import java.io.File;
 import java.io.IOException;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.*;
@@ -257,6 +258,16 @@ public class Controller {
 			n.setOnMouseReleased(event -> Platform.exit());
 		}
 		this.primaryStage.setOnCloseRequest(event -> Platform.exit());
+		n = primaryStage.getScene().lookup("#todoDetailSave");
+		if ( n != null && n instanceof Button) {
+			n.setOnMouseClicked(event -> this.saveTodoEntry());
+			n.setOnKeyPressed(event -> this.saveTodoEntry());
+		}
+		n = primaryStage.getScene().lookup("#todoDetailDueDate");
+		if (n != null && n instanceof CheckBox) {
+			((CheckBox) n).setOnAction(event -> this.detailUpdateDueDatePicker());
+		}
+		// TODO
 	}
 
 	private void updateSelectedTodoList() {
@@ -309,12 +320,22 @@ public class Controller {
 			return;
 		if(dueDate) {
 			((DatePicker) n).setValue( LocalDateTime.ofInstant(this.currentTodo.getDueDate().getTime().toInstant(), ZoneId.systemDefault()).toLocalDate() );
+			n.setDisable(false);
+		}else{
+			((DatePicker) n).setValue(null);
+			n.setDisable(true);
 		}
 		// time
 		n = primaryStage.getScene().lookup("#todoDetailTime");
 		if ( n == null || !(n instanceof TextField))
 			return;
-		((TextField) n).setText(this.currentTodo.getTime());
+		if ( dueDate ) {
+			((TextField) n).setText(this.currentTodo.getTime() );
+			n.setDisable(false);
+		}else{
+			n.setDisable(true);
+			((TextField) n).setText("00:00");
+		}
 	}
 
 	private void updateStatusLine(String text) {
@@ -327,7 +348,6 @@ public class Controller {
 	}
 
 	private void showSaveAs() {
-		// TODO
 		Stage save = new Stage();
 		save.setScene(scenes.get("saveAs"));
 		save.setTitle("Save as ...");
@@ -348,5 +368,77 @@ public class Controller {
 					}
 				}
 			});
+	}
+
+	private void saveTodoEntry() {
+		Node lv = primaryStage.getScene().lookup("#todos");
+		if ( lv == null || !(lv instanceof ListView)) {
+			this.updateStatusLine("Could’t get todo-ListView!");
+			return;
+		}
+		// title
+		Node n = primaryStage.getScene().lookup("#todoDetailTitle");
+		if ( n == null || !(n instanceof TextField)) {
+			this.updateStatusLine("Couldn’t load data from todoDetailTitle");
+			return;
+		}
+		this.currentTodo.setTitle(((TextField) n).getText());
+		// description
+		n = primaryStage.getScene().lookup("#todoDetailDescription");
+		if ( n == null || !(n instanceof TextArea)) {
+			this.updateStatusLine("Couldn’t load data from todoDetailDescription");
+			return;
+		}
+		this.currentTodo.setComment(((TextArea) n).getText());
+		// date
+		n = primaryStage.getScene().lookup("#todoDetailDueDate");
+		if ( n == null || !(n instanceof CheckBox)) {
+			this.updateStatusLine("Couldn’t load data from todoDetailDueDate");
+			return;
+		}
+		if ( !((CheckBox) n).isSelected() ) {
+			this.currentTodo.setDueDate(null);
+			this.updateStatusLine("Item updated!");
+			this.todos.add(this.currentTodo);
+			return;
+		}
+		n = primaryStage.getScene().lookup("#todoDetailDate");
+		if ( n == null || !(n instanceof DatePicker)) {
+			this.updateStatusLine("Couldn’t load data from todoDetailDate");
+			return;
+		}
+		LocalDate dd = ((DatePicker) n).getValue();
+		// time
+		n = primaryStage.getScene().lookup("#todoDetailTime");
+		if ( n == null || !(n instanceof TextField)) {
+			this.updateStatusLine("Couldn’t load data from todoDetailDate");
+			return;
+		}
+		if ( !this.currentTodo.validateTime(((TextField) n).getText())) {
+			this.updateStatusLine("Invalid time format, use HH:MM!");
+			return;
+		}
+		this.currentTodo.setDueDate(dd, ((TextField) n).getText());
+		this.updateStatusLine("Item updated!");
+	}
+	private void detailUpdateDueDatePicker() {
+		Node n = primaryStage.getScene().lookup("#todoDetailDueDate");
+		if ( n == null || !(n instanceof CheckBox)) {
+			this.updateStatusLine("Couldn’t load data from todoDetailDueDate");
+			return;
+		}
+		boolean enable = ((CheckBox) n).isSelected();
+		n = primaryStage.getScene().lookup("#todoDetailDate");
+		if ( n == null || !(n instanceof DatePicker)) {
+			this.updateStatusLine("Couldn’t load data from todoDetailDate");
+			return;
+		}
+		n.setDisable(!enable);
+		n = primaryStage.getScene().lookup("#todoDetailTime");
+		if ( n == null || !(n instanceof TextField)) {
+			this.updateStatusLine("Couldn’t load data from todoDetailTime");
+			return;
+		}
+		n.setDisable(!enable);
 	}
 }

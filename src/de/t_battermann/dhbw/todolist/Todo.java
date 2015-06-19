@@ -1,7 +1,9 @@
 package de.t_battermann.dhbw.todolist;
 
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.util.Calendar;
+import java.util.GregorianCalendar;
 import java.util.UUID;
 
 /**
@@ -154,8 +156,33 @@ public class Todo {
 
 	public String getTime() {
 		SimpleDateFormat format = new SimpleDateFormat();
-		format.applyPattern("yyyyMMdd'T'HH:mm:ssZ");
+		format.applyPattern("HH:mm");
 		return this.getDueDate() != null ? format.format(this.getDueDate().getTime()) : "00:00";
+	}
+
+	public boolean validateTime(String time) {
+		//return time.matches("((?<h>\\d{1,2}):(?<m>\\d{1,2})(:\\d{1,2})?|(?<h2>\\d{2})(?<m2>\\d{0,2})|(?<h3>)\\d)");
+		return time.matches("([0-9]{1,2}:[0-9]{1,2}(:[0-9]{1,2})?|[0-9]{1,4})");
+	}
+
+	public void setDueDate(LocalDate date, String time) {
+		Calendar nd = new GregorianCalendar();
+		int hour = 0;
+		int minute = 0;
+		if ( time.matches("\\d{1,2}:\\d{1,2}(:\\d{1,2})?") ) {
+			String t[] = time.split(":", 3);
+			hour = Integer.parseInt(t[0]);
+			minute = Integer.parseInt(t[1]);
+		}else if( time.matches("\\d{1,4}") ) {
+			if ( time.length() > 2 ) {
+				hour = Integer.parseInt(time.substring(0, 2));
+				minute = Integer.parseInt(time.substring(2, 2));
+			}else{
+				hour = Integer.parseInt( time );
+			}
+		}
+		nd.set(date.getYear(), date.getMonthValue(), date.getDayOfMonth(), hour<24?hour:0, minute<60?minute:0);
+		this.dueDate = nd;
 	}
 
 	@Override

@@ -47,8 +47,6 @@ public class User implements Serializable {
 		this.password = hashedPassword;
 		this.email = email;
 		this.todoLists = new LinkedList<>();
-		TodoList tmp = new TodoList("Default", false);
-		todoLists.add(tmp);
 	}
 
 	/**
