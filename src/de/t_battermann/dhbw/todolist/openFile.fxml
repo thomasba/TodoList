@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import java.lang.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="150.0" prefWidth="500.0" xmlns="http://javafx.com/javafx/8.0.45" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <TitledPane animated="false" collapsible="false" prefHeight="75.0" text="Load saved data">
+         <content>
+            <HBox prefWidth="200.0">
+               <children>
+                  <TextField id="openFilePath" prefHeight="26.0" prefWidth="346.0">
+                     <HBox.margin>
+                        <Insets right="5.0" />
+                     </HBox.margin>
+                  </TextField>
+                  <Button id="openFileButton" mnemonicParsing="false" prefHeight="26.0" prefWidth="127.0" text="Open file" />
+               </children>
+            </HBox>
+         </content>
+      </TitledPane>
+      <TitledPane animated="false" collapsible="false" prefHeight="75.0" text="New file">
+        <content>
+          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="0.0" prefWidth="498.0">
+               <children>
+                  <Button id="openFileNew" layoutX="14.0" layoutY="14.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="473.0" text="Create new file" AnchorPane.bottomAnchor="1.0" AnchorPane.leftAnchor="1.0" AnchorPane.rightAnchor="1.0" AnchorPane.topAnchor="1.0" />
+               </children></AnchorPane>
+        </content>
+      </TitledPane>
+   </children>
+</VBox>

@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+
+<VBox id="vbox" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="550.0" prefWidth="750.0" xmlns="http://javafx.com/javafx/8.0.45" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <ToolBar>
+        <items>
+            <Button id="menuSave" mnemonicParsing="false" text="Save" />
+          <Button id="menuSaveAs" mnemonicParsing="false" text="Save as ..." />
+            <Separator orientation="VERTICAL" />
+            <Button id="menuChangePassword" mnemonicParsing="false" text="Cange password" />
+            <Button id="MenuChangeEmail" mnemonicParsing="false" text="Change eMail" />
+          <Button id="menuLogout" mnemonicParsing="false" text="Log out" />
+            <Separator orientation="VERTICAL" />
+            <Button id="menuClose" mnemonicParsing="false" text="Close" />
+        </items>
+      </ToolBar>
+      <SplitPane dividerPositions="0.333" prefHeight="160.0" prefWidth="200.0" VBox.vgrow="ALWAYS">
+        <items>
+            <VBox>
+               <children>
+                  <ListView id="todoLists" VBox.vgrow="ALWAYS" />
+                  <ToolBar visible="false">
+                    <items>
+                        <TextField id="todoListNewName" />
+                      <Button id="todoListNewNameSave" mnemonicParsing="false" text="Save" />
+                    </items>
+                  </ToolBar>
+                  <ToolBar>
+                    <items>
+                      <Button mnemonicParsing="false" text="New" />
+                        <Button mnemonicParsing="false" text="Delete" />
+                        <Button mnemonicParsing="false" text="Edit" />
+                    </items>
+                  </ToolBar>
+               </children>
+            </VBox>
+            <VBox prefHeight="200.0" prefWidth="100.0">
+               <children>
+                  <ToolBar prefHeight="40.0" prefWidth="200.0">
+                    <items>
+                      <Button id="todoNew" mnemonicParsing="false" text="New" />
+                        <Button id="todoToggleDone" mnemonicParsing="false" text="(un)done" />
+                        <Button id="todoToggleStar" mnemonicParsing="false" text="(un)star" />
+                        <Button id="todoDelete" mnemonicParsing="false" text="delete" />
+                        <Separator orientation="VERTICAL" />
+                        <CheckBox id="todosShowDone" mnemonicParsing="false" text="show done" />
+                    </items>
+                  </ToolBar>
+                  <SplitPane dividerPositions="0.6" orientation="VERTICAL" VBox.vgrow="ALWAYS">
+                    <items>
+                        <ListView id="todos" prefHeight="200.0" prefWidth="200.0" />
+                        <ScrollPane vbarPolicy="ALWAYS">
+                           <content>
+                              <VBox>
+                                 <children>
+                                    <GridPane>
+                                      <columnConstraints>
+                                        <ColumnConstraints hgrow="ALWAYS" maxWidth="200.0" minWidth="10.0" prefWidth="105.0" />
+                                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="309.0" minWidth="10.0" prefWidth="309.0" />
+                                      </columnConstraints>
+                                      <rowConstraints>
+                                          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                          <RowConstraints maxHeight="1.7976931348623157E308" minHeight="10.0" prefHeight="75.0" vgrow="SOMETIMES" />
+                                        <RowConstraints maxHeight="30.0" minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                      </rowConstraints>
+                                       <children>
+                                          <Label text="Description" GridPane.rowIndex="1" />
+                                          <Label text="Due date" GridPane.rowIndex="2" />
+                                          <Label text="Title" />
+                                          <TextField id="todoDetailTitle" GridPane.columnIndex="1" />
+                                          <TextArea id="todoDetailDescription" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                                          <HBox prefHeight="100.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="2">
+                                             <children>
+                                                <CheckBox id="todoDetailDueDate" mnemonicParsing="false" />
+                                                <DatePicker id="todoDetailDate" disable="true" />
+                                                <TextField id="todoDetailTime" disable="true" text="12:00" />
+                                             </children>
+                                          </HBox>
+                                       </children>
+                                    </GridPane>
+                                    <Button id="todoDetailSave" mnemonicParsing="false" style="-fx-pref-width: 100%;" text="Save" VBox.vgrow="ALWAYS" />
+                                 </children>
+                              </VBox>
+                           </content>
+                        </ScrollPane>
+                    </items>
+                  </SplitPane>
+               </children>
+            </VBox>
+        </items>
+      </SplitPane>
+      <Label id="statusLine" text="TodoList" />
+   </children>
+</VBox>

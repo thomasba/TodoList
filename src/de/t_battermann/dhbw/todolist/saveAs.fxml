@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import java.lang.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<TitledPane animated="false" collapsible="false" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" text="Save as ..." xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/8.0.45">
+   <content>
+      <HBox>
+         <children>
+            <TextField id="filename">
+               <HBox.margin>
+                  <Insets right="5.0" />
+               </HBox.margin>
+            </TextField>
+            <Button id="save" mnemonicParsing="false" text="Save" />
+         </children>
+      </HBox>
+   </content>
+</TitledPane>
