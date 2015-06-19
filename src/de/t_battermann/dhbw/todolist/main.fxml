@@ -29,7 +29,7 @@
             <VBox>
                <children>
                   <ListView id="todoLists" VBox.vgrow="ALWAYS" />
-                  <ToolBar visible="false">
+                  <ToolBar id="todoListToolBar" visible="false">
                     <items>
                         <TextField id="todoListNewName" />
                       <Button id="todoListNewNameSave" mnemonicParsing="false" text="Save" />
@@ -37,9 +37,9 @@
                   </ToolBar>
                   <ToolBar>
                     <items>
-                      <Button mnemonicParsing="false" text="New" />
-                        <Button mnemonicParsing="false" text="Delete" />
-                        <Button mnemonicParsing="false" text="Edit" />
+                      <Button id="todoListNew" mnemonicParsing="false" text="New" />
+                        <Button id="todoListDelete"  mnemonicParsing="false" text="Delete" />
+                        <Button id="todoListEdit" mnemonicParsing="false" text="Edit" />
                     </items>
                   </ToolBar>
                </children>

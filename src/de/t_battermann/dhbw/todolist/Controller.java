@@ -26,6 +26,7 @@ public class Controller {
 	private String filename = null;
 	private Map<String,Scene> scenes = new HashMap<>();
 	private Stage primaryStage;
+	private String buttonAction = "new";
 
 	public Controller(Stage primaryStage) {
 		this.primaryStage = primaryStage;
@@ -267,6 +268,27 @@ public class Controller {
 		if (n != null && n instanceof CheckBox) {
 			((CheckBox) n).setOnAction(event -> this.detailUpdateDueDatePicker());
 		}
+		n = primaryStage.getScene().lookup("#todoListNewNameSave");
+		if ( n != null && n instanceof Button) {
+			((Button) n).setOnAction(event -> this.saveTodoListEdit());
+		}
+		// TODO: handle new  TodoList
+		n = primaryStage.getScene().lookup("#todoListNew");
+		if ( n != null && n instanceof Button) {
+			((Button) n).setOnAction(event -> {
+				this.buttonAction = "new";
+				this.showTodoListEdit();
+			});
+		}
+		// TODO: handle edit TodoList
+		n = primaryStage.getScene().lookup("#todoListEdit");
+		if ( n != null && n instanceof Button) {
+			((Button) n).setOnAction(event -> {
+				this.buttonAction = "edit";
+				this.showTodoListEdit();
+			});
+		}
+		// TODO: handle delete TodoList
 		// TODO
 	}
 
@@ -286,6 +308,15 @@ public class Controller {
 			this.todos = new ObservableListWrapper<>(t.getTodos());
 			lt.setItems(this.todos);
 			lt.getSelectionModel().select(0);
+			// update buttons :)
+			n = primaryStage.getScene().lookup("#todoListEdit");
+			if ( n!=null && n instanceof  Button) {
+				n.setDisable(!t.isChangeable());
+			}
+			n = primaryStage.getScene().lookup("#todoListDelete");
+			if (n!=null && n instanceof Button) {
+				n.setDisable(!t.isChangeable());
+			}
 		}
 		updateSelectedTodo();
 	}
@@ -440,5 +471,66 @@ public class Controller {
 			return;
 		}
 		n.setDisable(!enable);
+	}
+
+	private void showTodoListEdit() {
+		Node n = this.primaryStage.getScene().lookup("#todoListToolBar");
+		if ( n == null || !(n instanceof ToolBar)) {
+			return;
+		}
+		n.setDisable(false);
+		n.setVisible(true);
+		n = primaryStage.getScene().lookup("#todoListNewName");
+		if ( n == null || !(n instanceof TextField)) {
+			this.updateStatusLine("Couldn’t get 'todoListNewName'");
+			return;
+		}
+		if ( this.buttonAction.equals("edit")) {
+			Node l = primaryStage.getScene().lookup("#todoLists");
+			if ( l == null || !(l instanceof ListView) ) {
+				return;
+			}
+			ListView lv = (ListView) l;
+			if ( lv.getSelectionModel().getSelectedItem() != null && lv.getSelectionModel().getSelectedItem() instanceof TodoList ) {
+				((TextField) n).setText(((TodoList)lv.getSelectionModel().getSelectedItems()).getName());
+			}else{
+				((TextField) n).setText("Unknown Name");
+			}
+		}else {
+			((TextField) n).setText("New TodoList");
+		}
+	}
+	private void saveTodoListEdit() {
+		// TODO
+		Node n = primaryStage.getScene().lookup("#todoListNewName");
+		if ( n == null || !(n instanceof TextField)) {
+			this.updateStatusLine("Couldn’t get 'todoListNewName'");
+			return;
+		}
+		String name = ((TextField) n).getText();
+		((TextField) n).setText("");
+		if ( this.buttonAction.equals("new")) {
+			this.todoLists.add(new TodoList(name));
+			this.updateStatusLine("New TodoList generated!");
+		}else {
+			// edit existing one ...
+			n = primaryStage.getScene().lookup("#todoLists");
+			if (n == null || !(n instanceof ListView)) {
+				return;
+			}
+			ListView l = (ListView) n;
+			if (l.getSelectionModel().getSelectedItem() != null && l.getSelectionModel().getSelectedItem() instanceof TodoList) {
+				TodoList t = (TodoList) l.getSelectionModel().getSelectedItem();
+				t.setName(name);
+				this.todoLists.add(t);
+				this.updateStatusLine("TodoList renamed!");
+			}
+		}
+		n = this.primaryStage.getScene().lookup("#todoListToolBar");
+		if ( n == null || !(n instanceof ToolBar)) {
+			return;
+		}
+		n.setDisable(true);
+		n.setVisible(false);
 	}
 }
