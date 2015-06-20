@@ -8,6 +8,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.input.KeyCode;
 import javafx.stage.Stage;
 
 import java.io.File;
@@ -86,8 +87,11 @@ public class Controller {
 				e1.printStackTrace();
 				return false;
 			}
+			this.updateStatusLine("Saved data to'"+this.filename+"'");
 			return true;
 		}
+		this.updateStatusLine("No filename given. Please choose one!");
+		this.showSaveAs();
 		return false;
 	}
 
@@ -135,7 +139,7 @@ public class Controller {
 		// Log in
 		Node n = primaryStage.getScene().lookup("#loginButton");
 		if ( n != null && n instanceof Button) {
-			n.setOnMouseReleased(event -> {
+			((Button) n).setOnAction(event -> {
 				Label l = (Label) primaryStage.getScene().lookup("#labelHints");
 				String name = null;
 				String pass = null;
@@ -155,11 +159,11 @@ public class Controller {
 					if (this.currentUser.checkLoginData(pass)) {
 						this.todoLists = new ObservableListWrapper<>(currentUser.getTodoLists());
 						this.showMainWindow();
-					}else{
+					} else {
 						this.currentUser = null;
 						l.setText("Invalid credentials!");
 					}
-				}else{
+				} else {
 					l.setText("Invalid credentials! 1");
 				}
 			});
@@ -168,52 +172,54 @@ public class Controller {
 		}
 		n = primaryStage.getScene().lookup("#registerButton");
 		if ( n != null && n instanceof Button) {
-			n.setOnMouseReleased(event -> {
+			((Button) n).setOnAction(event -> {
 				Label l = (Label) primaryStage.getScene().lookup("#labelHintsCreateNewUser");
 				// username
 				String username;
 				Node no = primaryStage.getScene().lookup("#registerUsername");
-				if ( no != null && no instanceof TextField && User.checkUsername(((TextField) no).getText())) {
+				if (no != null && no instanceof TextField && User.checkUsername(((TextField) no).getText())) {
 					username = ((TextField) no).getText();
-				}else{
+				} else {
 					l.setText("Invalid username! (Regex: [a-zA-Z0-9_-]{3,})");
 					return;
 				}
-				if ( users.containsKey(username)) {
+				if (users.containsKey(username)) {
 					l.setText("Username already taken!");
 					return;
 				}
 				// password
 				String password;
 				no = primaryStage.getScene().lookup("#registerPassword");
-				if( no != null && no instanceof PasswordField && User.checkPassword(((PasswordField) no).getText())) {
+				if (no != null && no instanceof PasswordField && User.checkPassword(((PasswordField) no).getText())) {
 					password = ((PasswordField) no).getText();
 					no = primaryStage.getScene().lookup("#registerPasswordRepeat");
-					if( no == null || !(no instanceof PasswordField) || !password.equals(((PasswordField) no).getText())) {
+					if (no == null || !(no instanceof PasswordField) || !password.equals(((PasswordField) no).getText())) {
 						l.setText("The passwords didn’t match!");
 					}
-				}else{
+				} else {
 					l.setText("Password must be longer than 6 chars! And must contain numbers, lower and upper chars!");
 					return;
 				}
 				// eMail
 				String email;
 				no = primaryStage.getScene().lookup("#registerEmail");
-				if( no != null && no instanceof TextField && User.checkEmail( ((TextField) no).getText() ) ) {
+				if (no != null && no instanceof TextField && User.checkEmail(((TextField) no).getText())) {
 					email = ((TextField) no).getText();
 					no = primaryStage.getScene().lookup("#registerEmailRepeat");
-					if( no == null || !(no instanceof TextField) || !email.equals(((TextField) no).getText())) {
+					if (no == null || !(no instanceof TextField) || !email.equals(((TextField) no).getText())) {
 						l.setText("The eMail addresses didn’t match!");
 					}
-				}else{
+				} else {
 					l.setText("No valid eMail address given!");
 					return;
 				}
-				User nu = new User(username,password);
+				User nu = new User(username, password);
 				nu.setEmail(email);
 				currentUser = nu;
 				users.put(username, nu);
 				this.todoLists = new ObservableSequentialListWrapper<>(currentUser.getTodoLists());
+				// log in
+				this.showMainWindow();
 			});
 		}else{
 			this.printError("'#registerButton' not found!");
@@ -243,33 +249,32 @@ public class Controller {
 		}
 		n = primaryStage.getScene().lookup("#menuSave");
 		if ( n != null && n instanceof Button) {
-			n.setOnMouseReleased(event -> {
-				if ( this.filename != null) {
+			((Button) n).setOnAction(event -> {
+				if (this.filename != null) {
 					this.export(this.filename);
-				}else{
+				} else {
 					this.showSaveAs();
 				}
 			});
 		}
 		n = primaryStage.getScene().lookup("#menuSaveAs");
 		if ( n != null && n instanceof Button ) {
-			n.setOnMouseReleased(event -> this.showSaveAs());
+			((Button) n).setOnAction(event -> this.showSaveAs());
 		}
 		n = primaryStage.getScene().lookup("#menuClose");
 		if ( n != null && n instanceof Button ) {
-			n.setOnMouseReleased(event -> Platform.exit());
+			((Button) n).setOnAction(event -> Platform.exit());
 		}
 		this.primaryStage.setOnCloseRequest(event -> Platform.exit());
 		n = primaryStage.getScene().lookup("#todoDetailSave");
 		if ( n != null && n instanceof Button) {
-			n.setOnMouseClicked(event -> this.saveTodoEntry());
-			n.setOnKeyPressed(event -> this.saveTodoEntry());
+			((Button) n).setOnAction(event -> this.saveTodoEntry());
 		}
 		n = primaryStage.getScene().lookup("#todoDetailDueDate");
 		if (n != null && n instanceof CheckBox) {
 			((CheckBox) n).setOnAction(event -> this.detailUpdateDueDatePicker());
 		}
-		// TODO: handle new  TodoList
+		// handle new  TodoList
 		n = primaryStage.getScene().lookup("#todoListNew");
 		if ( n != null && n instanceof Button) {
 			((Button) n).setOnAction(event -> {
@@ -277,7 +282,7 @@ public class Controller {
 				this.showTodoListEdit();
 			});
 		}
-		// TODO: handle edit TodoList
+		// handle edit TodoList
 		n = primaryStage.getScene().lookup("#todoListEdit");
 		if ( n != null && n instanceof Button) {
 			((Button) n).setOnAction(event -> {
@@ -285,7 +290,11 @@ public class Controller {
 				this.showTodoListEdit();
 			});
 		}
-		// TODO: handle delete TodoList
+		// handle delete TodoList
+		n = primaryStage.getScene().lookup("#todoListDelete");
+		if( n != null && n instanceof Button) {
+			((Button) n).setOnAction(event -> deleteTodoList());
+		}
 		// TODO
 	}
 
@@ -314,6 +323,8 @@ public class Controller {
 			if (n!=null && n instanceof Button) {
 				n.setDisable(!t.isChangeable());
 			}
+			// if there is no todo item, empty the currentTodo
+			this.currentTodo = null;
 		}
 		updateSelectedTodo();
 	}
@@ -330,17 +341,17 @@ public class Controller {
 		n = primaryStage.getScene().lookup("#todoDetailTitle");
 		if ( n == null || !(n instanceof TextField))
 			return;
-		((TextField) n).setText( this.currentTodo.getTitle() );
+		((TextField) n).setText( this.currentTodo == null ? "" : this.currentTodo.getTitle() );
 		// comment
 		n = primaryStage.getScene().lookup("#todoDetailDescription");
 		if ( n == null || !(n instanceof TextArea) )
 			return;
-		((TextArea) n).setText( this.currentTodo.getComment() );
+		((TextArea) n).setText( this.currentTodo == null ? "" : this.currentTodo.getComment() );
 		// if dueDate set:
 		n = primaryStage.getScene().lookup("#todoDetailDueDate");
 		if ( n == null || !(n instanceof CheckBox) )
 			return;
-		boolean dueDate = this.currentTodo.getDueDate() != null;
+		boolean dueDate = this.currentTodo != null && this.currentTodo.getDueDate() != null;
 		((CheckBox) n).setSelected(dueDate);
 		// datePicker
 		n = primaryStage.getScene().lookup("#todoDetailDate");
@@ -381,17 +392,17 @@ public class Controller {
 		save.setTitle("Save as ...");
 		save.show();
 		Button s = (Button) save.getScene().lookup("#save");
-		if ( s != null )
-			s.setOnMouseReleased(event -> {
-				TextField f = (TextField)save.getScene().lookup("#filename");
-				if ( f != null) {
+		if ( s != null)
+			s.setOnAction(event -> {
+				TextField f = (TextField) save.getScene().lookup("#filename");
+				if (f != null) {
 					File file = new File(f.getText());
-					if ( !file.isDirectory() ) {
-						if ( this.filename == null)
+					if (!file.isDirectory()) {
+						if (this.filename == null)
 							this.filename = f.getText();
-						if(this.export(f.getText()))
+						if (this.export(f.getText()))
 							save.close();
-					}else{
+					} else {
 						this.updateStatusLine("Can’t write to file!");
 					}
 				}
@@ -399,6 +410,10 @@ public class Controller {
 	}
 
 	private void saveTodoEntry() {
+		if ( this.currentTodo == null ) {
+			this.updateStatusLine("No item selected!");
+			return;
+		}
 		Node lv = primaryStage.getScene().lookup("#todos");
 		if ( lv == null || !(lv instanceof ListView)) {
 			this.updateStatusLine("Could’t get todo-ListView!");
@@ -505,7 +520,6 @@ public class Controller {
 		}
 	}
 	private void saveTodoListEdit() {
-		// TODO
 		Node n = primaryStage.getScene().lookup("#todoListNewName");
 		if ( n == null || !(n instanceof TextField)) {
 			this.updateStatusLine("Couldn’t get 'todoListNewName'");
@@ -536,6 +550,23 @@ public class Controller {
 		}
 		n.setDisable(true);
 		n.setVisible(false);
+	}
+	private void deleteTodoList() {
+		Node n = primaryStage.getScene().lookup("#todoLists");
+		if (n == null || !(n instanceof ListView)) {
+			return;
+		}
+		ListView l = (ListView) n;
+		if (l.getSelectionModel().getSelectedItem() != null && l.getSelectionModel().getSelectedItem() instanceof TodoList) {
+			TodoList t = (TodoList) l.getSelectionModel().getSelectedItem();
+			if (!t.isChangeable() ) {
+				this.updateStatusLine("Can’t delete the TodoList!");
+				return;
+			}
+			this.todoLists.remove(t);
+			//this.notifyList(this.todoLists, this.currentTodo);
+			this.updateStatusLine("TodoList removed!");
+		}
 	}
 	private void printError(String s) {
 		SimpleDateFormat format = new SimpleDateFormat();
