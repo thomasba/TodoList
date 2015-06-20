@@ -12,6 +12,7 @@ import javafx.stage.Stage;
 
 import java.io.File;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -37,7 +38,7 @@ public class Controller {
 			scenes.put("main", new Scene(FXMLLoader.load(getClass().getResource("main.fxml")),600,500));
 			scenes.put("saveAs", new Scene(FXMLLoader.load(getClass().getResource("saveAs.fxml")),500,150));
 		} catch (IOException e1) {
-			System.out.println("Could’t load a fxml file!");
+			this.printError("Could’t load a fxml file!");
 			e1.printStackTrace();
 		}
 		showLoadFileDialog();
@@ -110,11 +111,11 @@ public class Controller {
 					this.initFromFile(((TextField) n).getText());
 					this.showLoginDialog();
 				} catch (InvalidDataException | IOException e1) {
-					System.out.println("Can’t read file '" + this.filename + "'");
+					this.printError("Can’t read file '" + this.filename + "'");
 					e1.printStackTrace();
 				}
 			}else{
-				System.out.println("Didn’t find #openFilePath!");
+				this.printError("Didn’t find #openFilePath!");
 			}
 		});
 		b = (Button) primaryStage.getScene().lookup("#openFileNew");
@@ -142,7 +143,7 @@ public class Controller {
 				if (m != null && m instanceof TextField) {
 					name = ((TextField) m).getText();
 				} else {
-					System.out.println("'#loginUsername' not found!");
+					this.printError("'#loginUsername' not found!");
 					return;
 				}
 				m = primaryStage.getScene().lookup("#loginPassword");
@@ -163,7 +164,7 @@ public class Controller {
 				}
 			});
 		}else{
-			System.out.println("'#loginButton' not found!");
+			this.printError("'#loginButton' not found!");
 		}
 		n = primaryStage.getScene().lookup("#registerButton");
 		if ( n != null && n instanceof Button) {
@@ -215,7 +216,7 @@ public class Controller {
 				this.todoLists = new ObservableSequentialListWrapper<>(currentUser.getTodoLists());
 			});
 		}else{
-			System.out.println("'#registerButton' not found!");
+			this.printError("'#registerButton' not found!");
 		}
 	}
 
@@ -267,10 +268,6 @@ public class Controller {
 		n = primaryStage.getScene().lookup("#todoDetailDueDate");
 		if (n != null && n instanceof CheckBox) {
 			((CheckBox) n).setOnAction(event -> this.detailUpdateDueDatePicker());
-		}
-		n = primaryStage.getScene().lookup("#todoListNewNameSave");
-		if ( n != null && n instanceof Button) {
-			((Button) n).setOnAction(event -> this.saveTodoListEdit());
 		}
 		// TODO: handle new  TodoList
 		n = primaryStage.getScene().lookup("#todoListNew");
@@ -374,7 +371,7 @@ public class Controller {
 		if ( n != null && n instanceof Label) {
 			((Label) n).setText(text);
 		}else{
-			System.out.println("Couldn’t find status line!");
+			this.printError("Couldn’t find status line!");
 		}
 	}
 
@@ -429,27 +426,26 @@ public class Controller {
 		}
 		if ( !((CheckBox) n).isSelected() ) {
 			this.currentTodo.setDueDate(null);
-			this.updateStatusLine("Item updated!");
-			this.todos.add(this.currentTodo);
-			return;
+		}else{
+			n = primaryStage.getScene().lookup("#todoDetailDate");
+			if (n == null || !(n instanceof DatePicker)) {
+				this.updateStatusLine("Couldn’t load data from todoDetailDate");
+				return;
+			}
+			LocalDate dd = ((DatePicker) n).getValue();
+			// time
+			n = primaryStage.getScene().lookup("#todoDetailTime");
+			if (n == null || !(n instanceof TextField)) {
+				this.updateStatusLine("Couldn’t load data from todoDetailDate");
+				return;
+			}
+			if (!this.currentTodo.validateTime(((TextField) n).getText())) {
+				this.updateStatusLine("Invalid time format, use HH:MM!");
+				return;
+			}
+			this.currentTodo.setDueDate(dd, ((TextField) n).getText());
 		}
-		n = primaryStage.getScene().lookup("#todoDetailDate");
-		if ( n == null || !(n instanceof DatePicker)) {
-			this.updateStatusLine("Couldn’t load data from todoDetailDate");
-			return;
-		}
-		LocalDate dd = ((DatePicker) n).getValue();
-		// time
-		n = primaryStage.getScene().lookup("#todoDetailTime");
-		if ( n == null || !(n instanceof TextField)) {
-			this.updateStatusLine("Couldn’t load data from todoDetailDate");
-			return;
-		}
-		if ( !this.currentTodo.validateTime(((TextField) n).getText())) {
-			this.updateStatusLine("Invalid time format, use HH:MM!");
-			return;
-		}
-		this.currentTodo.setDueDate(dd, ((TextField) n).getText());
+		this.notifyList(this.todos, this.currentTodo);
 		this.updateStatusLine("Item updated!");
 	}
 	private void detailUpdateDueDatePicker() {
@@ -476,10 +472,17 @@ public class Controller {
 	private void showTodoListEdit() {
 		Node n = this.primaryStage.getScene().lookup("#todoListToolBar");
 		if ( n == null || !(n instanceof ToolBar)) {
+			this.updateStatusLine("Couldn’t get 'todoListToolBar'");
 			return;
 		}
 		n.setDisable(false);
 		n.setVisible(true);
+		n = primaryStage.getScene().lookup("#todoListNewNameSave");
+		if ( n != null && n instanceof Button) {
+			((Button) n).setOnAction(event -> this.saveTodoListEdit());
+		}else{
+			this.printError("Couldn’t read 'todoListNewNameSave'");
+		}
 		n = primaryStage.getScene().lookup("#todoListNewName");
 		if ( n == null || !(n instanceof TextField)) {
 			this.updateStatusLine("Couldn’t get 'todoListNewName'");
@@ -488,11 +491,12 @@ public class Controller {
 		if ( this.buttonAction.equals("edit")) {
 			Node l = primaryStage.getScene().lookup("#todoLists");
 			if ( l == null || !(l instanceof ListView) ) {
+				this.updateStatusLine("Couldn’t get 'todoLists'");
 				return;
 			}
 			ListView lv = (ListView) l;
 			if ( lv.getSelectionModel().getSelectedItem() != null && lv.getSelectionModel().getSelectedItem() instanceof TodoList ) {
-				((TextField) n).setText(((TodoList)lv.getSelectionModel().getSelectedItems()).getName());
+				((TextField) n).setText(((TodoList)lv.getSelectionModel().getSelectedItem()).getName());
 			}else{
 				((TextField) n).setText("Unknown Name");
 			}
@@ -522,7 +526,7 @@ public class Controller {
 			if (l.getSelectionModel().getSelectedItem() != null && l.getSelectionModel().getSelectedItem() instanceof TodoList) {
 				TodoList t = (TodoList) l.getSelectionModel().getSelectedItem();
 				t.setName(name);
-				this.todoLists.add(t);
+				this.notifyList(this.todoLists, this.currentTodo);
 				this.updateStatusLine("TodoList renamed!");
 			}
 		}
@@ -532,5 +536,27 @@ public class Controller {
 		}
 		n.setDisable(true);
 		n.setVisible(false);
+	}
+	private void printError(String s) {
+		SimpleDateFormat format = new SimpleDateFormat();
+		format.applyPattern("yyyyMMdd'T'HH:mm:ssZ");
+		System.out.println("[" + format.format(GregorianCalendar.getInstance().getTime()) + "] " + s);
+	}
+
+	/**
+	 * Notify a list about a changed item
+	 * Taken from: http://stackoverflow.com/a/21435063
+	 * @param list the list containing the changed item
+	 * @param changedItem the item itself
+	 */
+	protected void notifyList(List list, Object changedItem) {
+		int index = list.indexOf(changedItem);
+		if (index >= 0) {
+			// hack around RT-28397
+			//https://javafx-jira.kenai.com/browse/RT-28397
+			list.set(index, null);
+			// good enough since jdk7u40 and jdk8
+			list.set(index, changedItem);
+		}
 	}
 }
