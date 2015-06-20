@@ -51,7 +51,7 @@
                       <Button id="todoNew" mnemonicParsing="false" text="New" />
                         <ToggleButton id="todoToggleDone" mnemonicParsing="false" text="done" />
                         <ToggleButton id="todoToggleStar" mnemonicParsing="false" text="star" />
-                        <Button id="menuMove" mnemonicParsing="false" text="move" />
+                        <Button id="todoMove" mnemonicParsing="false" text="move" />
                         <Button id="todoDelete" mnemonicParsing="false" text="delete" />
                         <Separator orientation="VERTICAL" />
                         <ToggleButton id="todosShowDone" mnemonicParsing="false" text="show done" />
