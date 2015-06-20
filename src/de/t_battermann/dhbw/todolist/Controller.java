@@ -581,6 +581,10 @@ public class Controller {
 				ErrorPrinter.printWarning("saveTodoEntry > Didn’t find element #todoDetailDate!");
 				return;
 			}
+			if ( dd == null ) {
+				this.updateStatusLine("Invalid date!");
+				return;
+			}
 			if (!this.currentTodo.validateTime(((TextField) n).getText())) {
 				this.updateStatusLine("Invalid time format, use HH:MM!");
 				return;
