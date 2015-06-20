@@ -287,11 +287,11 @@ public class Controller {
 		}
 		n = primaryStage.getScene().lookup("#menuClose");
 		if ( n != null && n instanceof Button ) {
-			((Button) n).setOnAction(event -> Platform.exit());
+			((Button) n).setOnAction(event -> showCloseDialog());
 		}else{
 			ErrorPrinter.printWarning("showMainWindow > Couldn’t find element '#menuClose'");
 		}
-		this.primaryStage.setOnCloseRequest(event -> Platform.exit());
+		this.primaryStage.setOnCloseRequest(event -> showCloseDialog());
 		n = primaryStage.getScene().lookup("#todoDetailSave");
 		if ( n != null && n instanceof Button) {
 			((Button) n).setOnAction(event -> this.saveTodoEntry());
@@ -497,6 +497,10 @@ public class Controller {
 	}
 
 	private void showSaveAs() {
+		showSaveAs(false);
+	}
+
+	private void showSaveAs(boolean exitAfterSave) {
 		Stage save = new Stage();
 		try {
 			save.setScene(new Scene(FXMLLoader.load(getClass().getResource("saveAs.fxml")),500,150));
@@ -521,8 +525,13 @@ public class Controller {
 					if (!file.isDirectory()) {
 						if (this.filename == null)
 							this.filename = f.getText();
-						if (this.export(f.getText()))
-							save.close();
+						if (this.export(f.getText())) {
+							if (exitAfterSave) {
+								Platform.exit();
+							} else {
+								save.close();
+							}
+						}
 					} else {
 						this.updateStatusLine("Can’t write to file!");
 					}
@@ -926,6 +935,44 @@ public class Controller {
 			this.currentUser.setEmail(email);
 			change.close();
 		});
+	}
+
+	private void showCloseDialog() {
+		Stage close = new Stage();
+		try {
+			close.setScene(new Scene(FXMLLoader.load(getClass().getResource("close.fxml"))));
+		} catch (IOException e) {
+			ErrorPrinter.printError("showCloseDialog > Failed to open window 'close'! Goodbye!");
+			e.printStackTrace();
+			Platform.exit();
+		}
+		close.setTitle("Close program?");
+		close.show();
+		Node n = close.getScene().lookup("#abort");
+		if ( n == null || !(n instanceof Button)) {
+			ErrorPrinter.printWarning("showCloseDialog > Didn’t find element #abort");
+			return;
+		}
+		((Button) n).setOnAction(event -> close.close());
+		n = close.getScene().lookup("#save");
+		if ( n == null || !(n instanceof Button)) {
+			ErrorPrinter.printWarning("showCloseDialog > Didn’t find element #save");
+			return;
+		}
+		((Button) n).setOnAction(event -> {
+			if (this.filename != null) {
+				this.export(this.filename);
+				Platform.exit();
+			} else {
+				this.showSaveAs(true);
+			}
+		});
+		n = close.getScene().lookup("#close");
+		if ( n == null || !(n instanceof Button)) {
+			ErrorPrinter.printWarning("showCloseDialog > Didn’t find element #close");
+			return;
+		}
+		((Button) n).setOnAction(event -> Platform.exit());
 	}
 
 	/**
