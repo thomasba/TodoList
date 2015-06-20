@@ -14,3 +14,6 @@ A project for class "programming 2" at Baden-Wuerttemberg Cooperative State Univ
 ## Todo
 
 - Implement CSVHandler to save CSV data
+- Highlight items with priority
+- Highlight items past due (and TodoList!)
+- filter items (include/exclude done items)
