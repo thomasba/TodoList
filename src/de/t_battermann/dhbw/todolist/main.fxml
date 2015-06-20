@@ -38,7 +38,7 @@
                   <ToolBar>
                     <items>
                       <Button id="todoListNew" mnemonicParsing="false" text="New" />
-                        <Button id="todoListDelete"  mnemonicParsing="false" text="Delete" />
+                        <Button id="todoListDelete" mnemonicParsing="false" text="Delete" />
                         <Button id="todoListEdit" mnemonicParsing="false" text="Edit" />
                     </items>
                   </ToolBar>
@@ -49,11 +49,11 @@
                   <ToolBar prefHeight="40.0" prefWidth="200.0">
                     <items>
                       <Button id="todoNew" mnemonicParsing="false" text="New" />
-                        <Button id="todoToggleDone" mnemonicParsing="false" text="(un)done" />
-                        <Button id="todoToggleStar" mnemonicParsing="false" text="(un)star" />
+                        <ToggleButton id="todoToggleDone" mnemonicParsing="false" text="done" />
+                        <ToggleButton id="todoToggleStar" mnemonicParsing="false" text="star" />
                         <Button id="todoDelete" mnemonicParsing="false" text="delete" />
                         <Separator orientation="VERTICAL" />
-                        <CheckBox id="todosShowDone" mnemonicParsing="false" text="show done" />
+                        <ToggleButton id="todosShowDone" mnemonicParsing="false" text="show done" />
                     </items>
                   </ToolBar>
                   <SplitPane dividerPositions="0.6" orientation="VERTICAL" VBox.vgrow="ALWAYS">
