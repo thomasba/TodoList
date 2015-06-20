@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.text.*?>
 <?import javafx.geometry.*?>
 <?import java.lang.*?>
 <?import javafx.scene.control.*?>
@@ -42,6 +43,9 @@
                      </children>
                   </VBox>
                </content>
+               <font>
+                  <Font name="System Bold" size="13.0" />
+               </font>
           </TitledPane>
           <TitledPane id="createNewUserPane" animated="false" text="Create new user">
                <content>
@@ -85,6 +89,9 @@
                      </children>
                   </VBox>
                </content>
+               <font>
+                  <Font name="System Bold" size="13.0" />
+               </font>
           </TitledPane>
         </panes>
       </Accordion>
