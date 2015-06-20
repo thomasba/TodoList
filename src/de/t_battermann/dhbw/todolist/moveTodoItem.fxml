@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.text.*?>
+<?import java.lang.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<TitledPane animated="false" collapsible="false" maxHeight="-Infinity" maxWidth="-Infinity" text="Move todo item" xmlns="http://javafx.com/javafx/8.0.45" xmlns:fx="http://javafx.com/fxml/1">
+   <font>
+      <Font name="System Bold" size="13.0" />
+   </font>
+   <content>
+      <VBox>
+         <children>
+            <Label text="Title:" />
+            <TextField id="title" editable="false">
+               <VBox.margin>
+                  <Insets bottom="5.0" />
+               </VBox.margin>
+            </TextField>
+            <Label text="Source:" />
+            <TextField id="source" editable="false">
+               <VBox.margin>
+                  <Insets bottom="5.0" />
+               </VBox.margin>
+            </TextField>
+            <Label text="Destination:" />
+            <ChoiceBox id="destination" minWidth="305.0">
+               <VBox.margin>
+                  <Insets bottom="15.0" />
+               </VBox.margin>
+            </ChoiceBox>
+            <HBox>
+               <children>
+                  <Button id="move" minWidth="150.0" mnemonicParsing="false" text="Move">
+                     <HBox.margin>
+                        <Insets right="5.0" />
+                     </HBox.margin>
+                  </Button>
+                  <Button id="abort" minWidth="150.0" mnemonicParsing="false" text="Abort" />
+               </children>
+            </HBox>
+         </children>
+      </VBox>
+   </content>
+</TitledPane>

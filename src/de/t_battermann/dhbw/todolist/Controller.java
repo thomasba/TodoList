@@ -373,11 +373,19 @@ public class Controller {
 		}else{
 			ErrorPrinter.printWarning("showMainWindow > Couldn’t find element '#menuChangeEmail'");
 		}
+		// log out
 		n = primaryStage.getScene().lookup("#menuLogout");
 		if ( n != null && n instanceof Button) {
 			((Button) n).setOnAction(event -> showLoginDialog());
 		}else{
 			ErrorPrinter.printWarning("showMainWindow > Couldn’t find element '#menuLogout'");
+		}
+		// move todo item
+		n = primaryStage.getScene().lookup("#todoMove");
+		if ( n != null && n instanceof Button) {
+			((Button) n).setOnAction(event -> showMoveTodoItem());
+		}else{
+			ErrorPrinter.printWarning("showMainWindow > Couldn’t find element '#todoMove'");
 		}
 	}
 
@@ -879,7 +887,6 @@ public class Controller {
 		Node n = change.getScene().lookup("#status");
 		if ( n == null || !(n instanceof Label)) {
 			ErrorPrinter.printWarning("showChangeEmail > Didn’t find element #status!");
-
 			return;
 		}
 		Label status = (Label) n;
@@ -973,6 +980,82 @@ public class Controller {
 			return;
 		}
 		((Button) n).setOnAction(event -> Platform.exit());
+	}
+
+	private void showMoveTodoItem() {
+		Stage move = new Stage();
+		try {
+			move.setScene(new Scene(FXMLLoader.load(getClass().getResource("moveTodoItem.fxml"))));
+		} catch (IOException e) {
+			ErrorPrinter.printError("showMoveTodoItem > Failed to open window 'moveTodoItem'! Goodbye!");
+			e.printStackTrace();
+			Platform.exit();
+		}
+		move.setTitle("Move item '" + this.currentTodo.getTitle() + "'");
+		move.show();
+		// fill in the gaps :)
+		Node n = move.getScene().lookup("#title");
+		if ( n == null || !(n instanceof TextField)) {
+			ErrorPrinter.printWarning("showMoveTodoItem > Didn’t find element #title");
+			return;
+		}
+		((TextField) n).setText(this.currentTodo.getTitle());
+		// get current TodoList
+		n = primaryStage.getScene().lookup("#todoLists");
+		if (n == null || !(n instanceof ListView)) {
+			ErrorPrinter.printWarning("showDeleteList > Didn’t find element #todoLists!");
+			return;
+		}
+		ListView l = (ListView) n;
+		TodoList t;
+		if (l.getSelectionModel().getSelectedItem() != null && l.getSelectionModel().getSelectedItem() instanceof TodoList) {
+			t = (TodoList) l.getSelectionModel().getSelectedItem();
+		}else {
+			ErrorPrinter.printWarning("showDeleteList > Didn’t find selected item!");
+			return;
+		}
+		n = move.getScene().lookup("#source");
+		if ( n == null || !(n instanceof TextField)) {
+			ErrorPrinter.printWarning("showDeleteList > Didn’t find element #source");
+			return;
+		}
+		((TextField) n).setText(t.getName());
+		// populate dropdown
+		n = move.getScene().lookup("#destination");
+		if ( n == null || !(n instanceof ChoiceBox)) {
+			ErrorPrinter.printWarning("showDeleteList > Didn’t find element #destination");
+			return;
+		}
+		ChoiceBox<TodoList> c = (ChoiceBox) n;
+		c.setItems(this.todoLists);
+		// event handlers
+		n = move.getScene().lookup("#abort");
+		if ( n == null || !(n instanceof Button)) {
+			ErrorPrinter.printWarning("showDeleteList > Didn’t find element #abort");
+			move.close();
+			return;
+		}
+		((Button) n).setOnAction(event -> move.close());
+		n = move.getScene().lookup("#move");
+		if ( n == null || !(n instanceof Button)) {
+			ErrorPrinter.printWarning("showDeleteList > Didn’t find element #move");
+			move.close();
+			return;
+		}
+		((Button) n).setOnAction(event -> {
+			// first add the item to the destination
+			TodoList list = c.getSelectionModel().getSelectedItem();
+			if ( list == null ) {
+				ErrorPrinter.printWarning("showDeleteList > Invalid selection!");
+				this.updateStatusLine("Invalid selection!");
+				return;
+			}
+			list.addTodo(this.currentTodo);
+			// then delete the item in the source list
+			todos.remove(this.currentTodo);
+			// update current list
+			move.close();
+		});
 	}
 
 	/**
