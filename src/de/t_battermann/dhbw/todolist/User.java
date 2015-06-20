@@ -3,13 +3,12 @@ package de.t_battermann.dhbw.todolist;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.validator.routines.EmailValidator;
 
-import java.io.Serializable;
 import java.util.*;
 
 /**
  * This class contains all the users data.
  */
-public class User implements Serializable {
+public class User {
 	private String username;
 	private String email;
 	private String password;
@@ -95,7 +94,7 @@ public class User implements Serializable {
 		for(TodoList l: todoLists)
 			if(l.getName().equals(name))
 				return l;
-		System.out.println("TodoList not found: " + name);
+		ErrorPrinter.printDebug("TodoList not found: " + name);
 		return null;
 	}
 
@@ -115,25 +114,14 @@ public class User implements Serializable {
 	 * @return the boolean
 	 */
 	public boolean checkLoginData(String password) {
-		System.out.println("pw:     " + password + " -> " + this.hashPassword(password));
-		System.out.println("stored: " + this.password);
+		ErrorPrinter.printDebug("checkLoginData > " + this.password + " <> " + this.hashPassword(password));
 		return this.hashPassword(password).equals(this.password);
 	}
 
 	@Override
 	public String toString() {
 		return "Username: " + username + "\n"
-				+ "eMail:	" + email + "\n";
-	}
-
-	/**
-	 * Add a todo list.
-	 *
-	 * @param name the name for the new list
-	 * @return false if a list with the given name already exists
-	 */
-	public boolean addTodoList(String name) {
-		return this.addTodoList(new TodoList(name));
+			 + "eMail:    " + email + "\n";
 	}
 
 	/**
@@ -147,7 +135,7 @@ public class User implements Serializable {
 			this.todoLists.add(todoList);
 			return true;
 		}
-		System.out.println("A TodoList named '" + todoList.getName() + "' already exists!");
+		ErrorPrinter.printDebug("addTodoList > A TodoList named '" + todoList.getName() + "' already exists!");
 		return false;
 	}
 
@@ -171,7 +159,7 @@ public class User implements Serializable {
 			this.email = email;
 			return true;
 		}
-		System.out.println("Invalid eMail: '" + email + "'");
+		ErrorPrinter.printDebug("setEmail > Invalid eMail: '" + email + "'");
 		return false;
 	}
 

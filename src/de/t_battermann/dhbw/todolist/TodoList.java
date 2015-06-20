@@ -24,7 +24,7 @@ public class TodoList {
 	/**
 	 * Instantiates a new Todo list.
 	 *
-	 * @param name	   the name
+	 * @param name       the name
 	 * @param changeable Can the name be changed?
 	 */
 	public TodoList(String name, boolean changeable) {
@@ -36,8 +36,8 @@ public class TodoList {
 	/**
 	 * Instantiates a new Todo list.
 	 *
-	 * @param uuid	   the uuid
-	 * @param name	   the name
+	 * @param uuid       the uuid
+	 * @param name       the name
 	 * @param changeable Can the name be changed?
 	 */
 	protected TodoList(String uuid, String name, boolean changeable) {

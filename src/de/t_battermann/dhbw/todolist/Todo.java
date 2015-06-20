@@ -161,7 +161,6 @@ public class Todo {
 	}
 
 	public boolean validateTime(String time) {
-		//return time.matches("((?<h>\\d{1,2}):(?<m>\\d{1,2})(:\\d{1,2})?|(?<h2>\\d{2})(?<m2>\\d{0,2})|(?<h3>)\\d)");
 		return time.matches("([0-9]{1,2}:[0-9]{1,2}(:[0-9]{1,2})?|[0-9]{1,4})");
 	}
 
