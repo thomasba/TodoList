@@ -25,26 +25,11 @@ public class Controller {
 	private ObservableList<Todo> todos;
 	private Todo currentTodo = null;
 	private String filename = null;
-	private Map<String,Scene> scenes = new HashMap<>();
 	private Stage primaryStage;
 	private String buttonAction = "new";
 
 	public Controller(Stage primaryStage) {
 		this.primaryStage = primaryStage;
-		// Initialize needed scenes
-		try {
-			scenes.put("openFile", new Scene(FXMLLoader.load(getClass().getResource("openFile.fxml")),500,150));
-			scenes.put("login", new Scene(FXMLLoader.load(getClass().getResource("login.fxml")),500,350));
-			scenes.put("main", new Scene(FXMLLoader.load(getClass().getResource("main.fxml")),600,500));
-			scenes.put("saveAs", new Scene(FXMLLoader.load(getClass().getResource("saveAs.fxml")),500,150));
-			scenes.put("deleteTodoItem", new Scene(FXMLLoader.load(getClass().getResource("deleteTodoItem.fxml"))));
-			scenes.put("deleteTodoList", new Scene(FXMLLoader.load(getClass().getResource("deleteTodoItem.fxml"))));
-			scenes.put("changeEmail", new Scene(FXMLLoader.load(getClass().getResource("changeEmail.fxml"))));
-			scenes.put("changePassword", new Scene(FXMLLoader.load(getClass().getResource("changePassword.fxml"))));
-		} catch (IOException e1) {
-			this.printError("Could’t load a fxml file!");
-			e1.printStackTrace();
-		}
 		showLoadFileDialog();
 	}
 
@@ -107,7 +92,13 @@ public class Controller {
 		this.filename = null;
 		// show dialog
 		primaryStage.setTitle("TodoList :: Open database");
-		primaryStage.setScene(scenes.get("openFile"));
+		try {
+			primaryStage.setScene(new Scene(FXMLLoader.load(getClass().getResource("openFile.fxml")),500,150));
+		} catch (IOException e) {
+			this.printError("Couldn’t open file open window!");
+			e.printStackTrace();
+			return;
+		}
 		primaryStage.show();
 		// register event handlers
 		Button b = (Button) primaryStage.getScene().lookup("#openFileButton");
@@ -133,8 +124,18 @@ public class Controller {
 	}
 
 	private void showLoginDialog() {
+		// log out ...
+		this.currentUser = null;
+		this.todoLists = null;
+		this.todos = null;
 		primaryStage.setTitle("TodoList :: Log in");
-		primaryStage.setScene(scenes.get("login"));
+		try {
+			primaryStage.setScene(new Scene(FXMLLoader.load(getClass().getResource("login.fxml")),500,350));
+		} catch (IOException e) {
+			this.printError("Failed to open login window!");
+			e.printStackTrace();
+			return;
+		}
 		TitledPane a = (TitledPane) primaryStage.getScene().lookup(users.isEmpty() ? "#createNewUserPane" : "#loginPane");
 		if ( a != null ) {
 			a.setExpanded(true);
@@ -231,7 +232,13 @@ public class Controller {
 
 	private void showMainWindow() {
 		primaryStage.setTitle("TodoList :: " + currentUser.getUsername() +  " > Default");
-		primaryStage.setScene(scenes.get("main"));
+		try {
+			primaryStage.setScene(new Scene(FXMLLoader.load(getClass().getResource("main.fxml")),600,500));
+		} catch (IOException e) {
+			this.printError("Failed to open window!");
+			e.printStackTrace();
+			return;
+		}
 		Node n = primaryStage.getScene().lookup("#todoLists");
 		if ( n != null && n instanceof ListView) {
 			ListView<TodoList> lv = (ListView<TodoList>) n;
@@ -328,7 +335,10 @@ public class Controller {
 		if ( n != null && n instanceof Button ) {
 			((Button) n).setOnAction(event -> showChangeEmail());
 		}
-		// TODO
+		n = primaryStage.getScene().lookup("#menuLogout");
+		if ( n != null && n instanceof Button) {
+			((Button) n).setOnAction(event -> showLoginDialog());
+		}
 	}
 
 	private void updateSelectedTodoList() {
@@ -431,9 +441,19 @@ public class Controller {
 
 	private void showSaveAs() {
 		Stage save = new Stage();
-		save.setScene(scenes.get("saveAs"));
+		try {
+			save.setScene(new Scene(FXMLLoader.load(getClass().getResource("saveAs.fxml")),500,150));
+		} catch (IOException e) {
+			this.updateStatusLine("Failed to open window!");
+			e.printStackTrace();
+			return;
+		}
 		save.setTitle("Save as ...");
 		save.show();
+		Node n = primaryStage.getScene().lookup("#filename");
+		if ( n != null && n instanceof TextField && this.filename != null ) {
+			((TextField)n).setText(this.filename);
+		}
 		Button s = (Button) save.getScene().lookup("#save");
 		if ( s != null)
 			s.setOnAction(event -> {
@@ -594,23 +614,6 @@ public class Controller {
 		n.setDisable(true);
 		n.setVisible(false);
 	}
-	private void deleteTodoList() {
-		Node n = primaryStage.getScene().lookup("#todoLists");
-		if (n == null || !(n instanceof ListView)) {
-			return;
-		}
-		ListView l = (ListView) n;
-		if (l.getSelectionModel().getSelectedItem() != null && l.getSelectionModel().getSelectedItem() instanceof TodoList) {
-			TodoList t = (TodoList) l.getSelectionModel().getSelectedItem();
-			if (!t.isChangeable() ) {
-				this.updateStatusLine("Can’t delete the TodoList!");
-				return;
-			}
-			this.todoLists.remove(t);
-			//this.notifyList(this.todoLists, this.currentTodo);
-			this.updateStatusLine("TodoList removed!");
-		}
-	}
 	private void toggleDone() {
 		if(this.currentTodo == null)
 			return;
@@ -646,7 +649,13 @@ public class Controller {
 	}
 	private void showDeleteItem() {
 		Stage delete = new Stage();
-		delete.setScene(scenes.get("deleteTodoItem"));
+		try {
+			delete.setScene(new Scene(FXMLLoader.load(getClass().getResource("deleteTodoItem.fxml"))));
+		} catch (IOException e) {
+			this.updateStatusLine("Failed to open window!");
+			e.printStackTrace();
+			return;
+		}
 		delete.setTitle("Delete '"+this.currentTodo.getTitle()+"'");
 		delete.show();
 		Node n = delete.getScene().lookup("#no");
@@ -662,7 +671,13 @@ public class Controller {
 	}
 	private void showDeleteList() {
 		Stage delete = new Stage();
-		delete.setScene(scenes.get("deleteTodoList"));
+		try {
+			delete.setScene(new Scene(FXMLLoader.load(getClass().getResource("deleteTodoItem.fxml"))));
+		} catch (IOException e) {
+			this.updateStatusLine("Failed to open window!");
+			e.printStackTrace();
+			return;
+		}
 		Node n = primaryStage.getScene().lookup("#todoLists");
 		if (n == null || !(n instanceof ListView)) {
 			return;
