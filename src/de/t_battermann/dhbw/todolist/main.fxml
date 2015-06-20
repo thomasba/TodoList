@@ -18,7 +18,7 @@
           <Button id="menuSaveAs" mnemonicParsing="false" text="Save as ..." />
             <Separator orientation="VERTICAL" />
             <Button id="menuChangePassword" mnemonicParsing="false" text="Cange password" />
-            <Button id="MenuChangeEmail" mnemonicParsing="false" text="Change eMail" />
+            <Button id="menuChangeEmail" mnemonicParsing="false" text="Change eMail" />
           <Button id="menuLogout" mnemonicParsing="false" text="Log out" />
             <Separator orientation="VERTICAL" />
             <Button id="menuClose" mnemonicParsing="false" text="Close" />

@@ -8,7 +8,6 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.input.KeyCode;
 import javafx.stage.Stage;
 
 import java.io.File;
@@ -38,6 +37,10 @@ public class Controller {
 			scenes.put("login", new Scene(FXMLLoader.load(getClass().getResource("login.fxml")),500,350));
 			scenes.put("main", new Scene(FXMLLoader.load(getClass().getResource("main.fxml")),600,500));
 			scenes.put("saveAs", new Scene(FXMLLoader.load(getClass().getResource("saveAs.fxml")),500,150));
+			scenes.put("deleteTodoItem", new Scene(FXMLLoader.load(getClass().getResource("deleteTodoItem.fxml"))));
+			scenes.put("deleteTodoList", new Scene(FXMLLoader.load(getClass().getResource("deleteTodoItem.fxml"))));
+			scenes.put("changeEmail", new Scene(FXMLLoader.load(getClass().getResource("changeEmail.fxml"))));
+			scenes.put("changePassword", new Scene(FXMLLoader.load(getClass().getResource("changePassword.fxml"))));
 		} catch (IOException e1) {
 			this.printError("Could’t load a fxml file!");
 			e1.printStackTrace();
@@ -87,7 +90,7 @@ public class Controller {
 				e1.printStackTrace();
 				return false;
 			}
-			this.updateStatusLine("Saved data to'"+this.filename+"'");
+			this.updateStatusLine("Saved data to'"+filename+"'");
 			return true;
 		}
 		this.updateStatusLine("No filename given. Please choose one!");
@@ -293,7 +296,37 @@ public class Controller {
 		// handle delete TodoList
 		n = primaryStage.getScene().lookup("#todoListDelete");
 		if( n != null && n instanceof Button) {
-			((Button) n).setOnAction(event -> deleteTodoList());
+			((Button) n).setOnAction(event -> showDeleteList());
+		}
+		// toggle todo
+		n = primaryStage.getScene().lookup("#todoToggleDone");
+		if ( n!= null && n instanceof ToggleButton) {
+			((ToggleButton) n).setOnAction(event -> toggleDone());
+		}
+		// toggle star
+		n = primaryStage.getScene().lookup("#todoToggleStar");
+		if ( n!= null && n instanceof ToggleButton) {
+			((ToggleButton) n).setOnAction(event -> toggleStar());
+		}
+		// add new todo item
+		n = primaryStage.getScene().lookup("#todoNew");
+		if ( n!= null && n instanceof Button) {
+			((Button) n).setOnAction(event -> newTodoItem());
+		}
+		// delete todo item
+		n = primaryStage.getScene().lookup("#todoDelete");
+		if ( n != null && n instanceof Button ) {
+			((Button) n).setOnAction(event -> showDeleteItem());
+		}
+		// change password
+		n = primaryStage.getScene().lookup("#menuChangePassword");
+		if ( n != null && n instanceof Button ) {
+			((Button) n).setOnAction(event -> showChangePassword());
+		}
+		// change eMail
+		n = primaryStage.getScene().lookup("#menuChangeEmail");
+		if ( n != null && n instanceof Button ) {
+			((Button) n).setOnAction(event -> showChangeEmail());
 		}
 		// TODO
 	}
@@ -374,6 +407,16 @@ public class Controller {
 		}else{
 			n.setDisable(true);
 			((TextField) n).setText("00:00");
+		}
+		// stared
+		n = primaryStage.getScene().lookup("#todoToggleStar");
+		if ( n != null && n instanceof ToggleButton ) {
+			((ToggleButton) n).setSelected(currentTodo != null && currentTodo.isPrio());
+		}
+		// done
+		n = primaryStage.getScene().lookup("#todoToggleDone");
+		if ( n != null && n instanceof ToggleButton) {
+			((ToggleButton) n).setSelected(currentTodo != null && currentTodo.isDone());
 		}
 	}
 
@@ -567,6 +610,211 @@ public class Controller {
 			//this.notifyList(this.todoLists, this.currentTodo);
 			this.updateStatusLine("TodoList removed!");
 		}
+	}
+	private void toggleDone() {
+		if(this.currentTodo == null)
+			return;
+		Node n = primaryStage.getScene().lookup("#todoToggleDone");
+		if ( n == null || !(n instanceof ToggleButton) ) {
+			this.printError("todoToggleDone not found.");
+			return;
+		}
+		this.currentTodo.setDone(!this.currentTodo.isDone());
+		((ToggleButton) n).setSelected(this.currentTodo.isDone());
+	}
+	private void toggleStar() {
+		if(this.currentTodo == null)
+			return;
+		Node n = primaryStage.getScene().lookup("#todoToggleStar");
+		if ( n == null || !(n instanceof ToggleButton) ) {
+			this.printError("todoToggleStar not found.");
+			return;
+		}
+		this.currentTodo.setPrio(!this.currentTodo.isPrio());
+		((ToggleButton) n).setSelected(this.currentTodo.isPrio());
+	}
+	private void newTodoItem() {
+		Todo t = new Todo("New Item", "Edit this item :-)");
+		this.todos.add(t);
+		this.updateStatusLine("Item added!");
+		Node n = primaryStage.getScene().lookup("#todos");
+		if ( n == null || !(n instanceof ListView) ) {
+			return;
+		}
+		((ListView) n).getSelectionModel().select(t);
+		((ListView) n).scrollTo(t);
+	}
+	private void showDeleteItem() {
+		Stage delete = new Stage();
+		delete.setScene(scenes.get("deleteTodoItem"));
+		delete.setTitle("Delete '"+this.currentTodo.getTitle()+"'");
+		delete.show();
+		Node n = delete.getScene().lookup("#no");
+		if ( n != null && n instanceof Button)
+			((Button)n).setOnAction(event -> delete.close());
+		n = delete.getScene().lookup("#yes");
+		if ( n != null && n instanceof Button )
+			((Button) n).setOnAction(event -> {
+				this.todos.remove(this.currentTodo);
+				this.updateStatusLine("Deleted item!");
+				delete.close();
+			});
+	}
+	private void showDeleteList() {
+		Stage delete = new Stage();
+		delete.setScene(scenes.get("deleteTodoList"));
+		Node n = primaryStage.getScene().lookup("#todoLists");
+		if (n == null || !(n instanceof ListView)) {
+			return;
+		}
+		ListView l = (ListView) n;
+		TodoList t;
+		if (l.getSelectionModel().getSelectedItem() != null && l.getSelectionModel().getSelectedItem() instanceof TodoList) {
+			t = (TodoList) l.getSelectionModel().getSelectedItem();
+		}else {
+			return;
+		}
+		delete.setTitle("Delete '"+t.getName()+"'");
+		delete.show();
+		n = delete.getScene().lookup("#no");
+		if ( n != null && n instanceof Button)
+			((Button)n).setOnAction(event -> delete.close());
+		n = delete.getScene().lookup("#yes");
+		if ( n != null && n instanceof Button )
+			((Button) n).setOnAction(event -> {
+				this.todoLists.remove(t);
+				this.updateStatusLine("Deleted TodoList!");
+				delete.close();
+			});
+	}
+	private void showChangePassword() {
+		Stage change = new Stage();
+		try {
+			change.setScene(new Scene(FXMLLoader.load(getClass().getResource("changePassword.fxml"))));
+		} catch (IOException e) {
+			e.printStackTrace();
+			return;
+		}
+		change.setTitle("Change password");
+		change.show();
+		Node n = change.getScene().lookup("#status");
+		if ( n == null || !(n instanceof Label)) {
+			this.printError("Couldn’t access status label");
+			return;
+		}
+		Label status = (Label) n;
+		n = change.getScene().lookup("#abort");
+		if ( n == null || !(n instanceof Button)) {
+			this.printError("Couldn’t access abort button");
+			return;
+		}
+		((Button) n).setOnAction(event -> change.close());
+		n = change.getScene().lookup("#save");
+		if ( n == null || !(n instanceof Button)) {
+			this.printError("Couldn’t access save button");
+			return;
+		}
+		((Button) n).setOnAction(event -> {
+			String pw;
+			// validate passwords ...
+			Node l = change.getScene().lookup("#password");
+			if ( l == null || !(l instanceof PasswordField)) {
+				status.setText("Couldn’t access password field!");
+				return;
+			}
+			if (!currentUser.checkLoginData( ((PasswordField) l).getText() )) {
+				status.setText("Wrong password!");
+				return;
+			}
+			l = change.getScene().lookup("#newPassword");
+			if ( l == null || !(l instanceof PasswordField)) {
+				status.setText("Couldn’t access newPassword field!");
+				return;
+			}
+			pw = ((PasswordField)l).getText();
+			if (!User.checkPassword(pw)) {
+				status.setText("Please use at least 6 chars, upper- and lowercase and numbers!");
+				return;
+			}
+			l = change.getScene().lookup("#newPasswordRepeat");
+			if ( l == null || !(l instanceof PasswordField)) {
+				status.setText("Couldn’t access newPasswordRepeat field!");
+				return;
+			}
+			if ( !pw.equals( ((PasswordField) l).getText() )) {
+				status.setText("Passwords didn’t match!");
+				return;
+			}
+			this.currentUser.setPassword(pw);
+			change.close();
+		});
+	}
+	private void showChangeEmail() {
+		Stage change = new Stage();
+		try {
+			change.setScene(new Scene(FXMLLoader.load(getClass().getResource("changeEmail.fxml"))));
+		} catch (IOException e) {
+			e.printStackTrace();
+			return;
+		}
+		change.setTitle("Change eMail");
+		change.show();
+		Node n = change.getScene().lookup("#status");
+		if ( n == null || !(n instanceof Label)) {
+			this.printError("Couldn’t access status label");
+			return;
+		}
+		Label status = (Label) n;
+		// load current email address
+		n = change.getScene().lookup("#eMail");
+		if ( n == null || !(n instanceof TextField)) {
+			status.setText("Couldn’t access eMail field!");
+			return;
+		}
+		((TextField) n).setText(this.currentUser.getEmail());
+		n = change.getScene().lookup("#eMailRepeat");
+		if ( n == null || !(n instanceof TextField)) {
+			status.setText("Couldn’t access eMailRepeat field!");
+			return;
+		}
+		((TextField) n).setText(this.currentUser.getEmail());
+		// actions
+		n = change.getScene().lookup("#abort");
+		if ( n == null || !(n instanceof Button)) {
+			this.printError("Couldn’t access abort button");
+			return;
+		}
+		((Button) n).setOnAction(event -> change.close());
+		n = change.getScene().lookup("#save");
+		if ( n == null || !(n instanceof Button)) {
+			this.printError("Couldn’t access save button");
+			return;
+		}
+		((Button) n).setOnAction(event -> {
+			String email;
+			// validate passwords ...
+			Node l = change.getScene().lookup("#eMail");
+			if ( l == null || !(l instanceof TextField)) {
+				status.setText("Couldn’t access eMail field!");
+				return;
+			}
+			email = ((TextField) l).getText();
+			if (!User.checkEmail(email)) {
+				status.setText("Invalid format!");
+				return;
+			}
+			l = change.getScene().lookup("#eMailRepeat");
+			if ( l == null || !(l instanceof TextField)) {
+				status.setText("Couldn’t access eMailRepeat field!");
+				return;
+			}
+			if ( !email.equals( ((TextField) l).getText() )) {
+				status.setText("eMails didn’t match!");
+				return;
+			}
+			this.currentUser.setEmail(email);
+			change.close();
+		});
 	}
 	private void printError(String s) {
 		SimpleDateFormat format = new SimpleDateFormat();
