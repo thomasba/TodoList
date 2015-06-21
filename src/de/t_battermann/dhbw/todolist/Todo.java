@@ -160,6 +160,12 @@ public class Todo {
 		return this.getDueDate() != null ? format.format(this.getDueDate().getTime()) : "00:00";
 	}
 
+	public String getDateTime() {
+		SimpleDateFormat format = new SimpleDateFormat();
+		format.applyPattern("yyyy-MM-dd HH:mm");
+		return this.getDueDate() != null ? format.format(this.getDueDate().getTime()) : "0000-00-00 00:00";
+	}
+
 	public boolean validateTime(String time) {
 		return time.matches("([0-9]{1,2}:[0-9]{1,2}(:[0-9]{1,2})?|[0-9]{1,4})");
 	}
@@ -182,6 +188,13 @@ public class Todo {
 		}
 		nd.set(date.getYear(), date.getMonthValue(), date.getDayOfMonth(), hour<24?hour:0, minute<60?minute:0);
 		this.dueDate = nd;
+	}
+
+	public boolean pastDue() {
+		if ( this.dueDate == null )
+			return false;
+		Calendar today = new GregorianCalendar();
+		return today.after(this.dueDate);
 	}
 
 	@Override

@@ -13,8 +13,7 @@ A project for class "programming 2" at Baden-Wuerttemberg Cooperative State Univ
 
 ## Todo
 
-- Highlight items with priority
-- Highlight items past due (and TodoList!)
+- Highlight TodoLists with items past due
 - filter items (include/exclude done items)
 
 ## Dependencies

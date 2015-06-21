@@ -8,6 +8,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.paint.Paint;
 import javafx.stage.Stage;
 
 import java.io.File;
@@ -30,6 +31,26 @@ public class Controller {
 	public Controller(Stage primaryStage) {
 		this.primaryStage = primaryStage;
 		showLoadFileDialog();
+	}
+
+	static class TodoListCell extends ListCell<Todo> {
+		@Override
+		public void updateItem(Todo item, boolean empty) {
+			super.updateItem(item, empty);
+			if ( !empty && item != null ) {
+				if ( item.isPrio() && !item.isDone() ) {
+					this.setStyle("-fx-graphic:url(/de/t_battermann/dhbw/todolist/star.png);");
+				}else{
+					this.setStyle("-fx-graphic:null;");
+				}
+				this.setTextFill(Paint.valueOf(item.isDone() ? "#999999" : (item.pastDue() ? "#aa0000" :"#000000") ));
+				this.setText(item.getTitle() + (item.getDueDate() != null ? " (due: "+item.getDateTime()+")" : ""));
+			}else{
+				this.setStyle("-fx-graphic:null;");
+				this.setTextFill(Paint.valueOf("#000000"));
+				this.setText("");
+			}
+		}
 	}
 
 	/**
@@ -264,6 +285,7 @@ public class Controller {
 			lv.getSelectionModel().selectedIndexProperty().addListener(event -> {
 				this.updateSelectedTodo();
 			});
+			lv.setCellFactory(param -> new TodoListCell());
 		}else{
 			ErrorPrinter.printWarning("showMainWindow > Couldn’t find element '#todos'");
 		}
@@ -720,6 +742,7 @@ public class Controller {
 		}
 		this.currentTodo.setDone(!this.currentTodo.isDone());
 		((ToggleButton) n).setSelected(this.currentTodo.isDone());
+		this.notifyList(todos,currentTodo);
 	}
 
 	private void toggleStar() {
@@ -732,6 +755,7 @@ public class Controller {
 		}
 		this.currentTodo.setPrio(!this.currentTodo.isPrio());
 		((ToggleButton) n).setSelected(this.currentTodo.isPrio());
+		this.notifyList(todos,currentTodo);
 	}
 
 	private void newTodoItem() {
