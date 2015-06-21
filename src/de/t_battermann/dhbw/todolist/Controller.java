@@ -16,10 +16,12 @@ import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.util.*;
+import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 
 public class Controller {
-	private Map<String,User> users = null;
+	private Map<String, User> users = null;
 	private User currentUser = null;
 	private ObservableList<TodoList> todoLists = null;
 	private ObservableList<Todo> todos;
@@ -33,26 +35,6 @@ public class Controller {
 		showLoadFileDialog();
 	}
 
-	static class TodoListCell extends ListCell<Todo> {
-		@Override
-		public void updateItem(Todo item, boolean empty) {
-			super.updateItem(item, empty);
-			if ( !empty && item != null ) {
-				if ( item.isPrio() && !item.isDone() ) {
-					this.setStyle("-fx-graphic:url(/de/t_battermann/dhbw/todolist/star.png);");
-				}else{
-					this.setStyle("-fx-graphic:null;");
-				}
-				this.setTextFill(Paint.valueOf(item.isDone() ? "#999999" : (item.pastDue() ? "#aa0000" :"#000000") ));
-				this.setText(item.getTitle() + (item.getDueDate() != null ? " (due: "+item.getDateTime()+")" : ""));
-			}else{
-				this.setStyle("-fx-graphic:null;");
-				this.setTextFill(Paint.valueOf("#000000"));
-				this.setText("");
-			}
-		}
-	}
-
 	/**
 	 * Initialize new empty
 	 */
@@ -63,13 +45,13 @@ public class Controller {
 
 	public void initFromFile(String filename) throws IOException, InvalidDataException {
 		File f = new File(filename);
-		if ( !f.isFile() || f.isDirectory() || !f.canRead()) {
+		if (!f.isFile() || f.isDirectory() || !f.canRead()) {
 			throw new IOException();
 		}
 		ExportHandler e;
-		if ( filename.endsWith(".csv") ) {
+		if (filename.endsWith(".csv")) {
 			e = new CSVHandler();
-		}else{
+		} else {
 			e = new XMLHandler();
 		}
 		this.users = e.importFromFile(new File(filename));
@@ -77,17 +59,17 @@ public class Controller {
 	}
 
 	public boolean export(String filename) {
-		if ( filename != null) {
+		if (filename != null) {
 			File f = new File(filename);
-			if ( f.isDirectory() ) {
+			if (f.isDirectory()) {
 				this.updateStatusLine("Couldn’t write to file '" + filename + "'");
 				ErrorPrinter.printError("export > Couldn’t write to file '" + filename + "'");
 				return false;
 			}
 			ExportHandler e;
-			if ( filename.endsWith(".csv") ) {
+			if (filename.endsWith(".csv")) {
 				e = new CSVHandler();
-			}else {
+			} else {
 				e = new XMLHandler();
 			}
 			try {
@@ -98,8 +80,8 @@ public class Controller {
 				e1.printStackTrace();
 				return false;
 			}
-			this.updateStatusLine("Saved data to'"+filename+"'");
-			ErrorPrinter.printInfo("export > Saved data to'"+filename+"'");
+			this.updateStatusLine("Saved data to'" + filename + "'");
+			ErrorPrinter.printInfo("export > Saved data to'" + filename + "'");
 			return true;
 		}
 		this.updateStatusLine("No filename given. Please choose one!");
@@ -117,7 +99,7 @@ public class Controller {
 		// show dialog
 		primaryStage.setTitle("TodoList :: Open database");
 		try {
-			primaryStage.setScene(new Scene(FXMLLoader.load(getClass().getResource("openFile.fxml")),500,150));
+			primaryStage.setScene(new Scene(FXMLLoader.load(getClass().getResource("openFile.fxml")), 500, 150));
 		} catch (IOException e) {
 			ErrorPrinter.printError("showLoadFileDialog > Could’t open window 'openFile'! Goodbye!");
 			e.printStackTrace();
@@ -129,7 +111,7 @@ public class Controller {
 		Button b = (Button) primaryStage.getScene().lookup("#openFileButton");
 		b.setOnMouseReleased(event -> {
 			Node n = primaryStage.getScene().lookup("#openFilePath");
-			if ( n != null && n instanceof TextField ) {
+			if (n != null && n instanceof TextField) {
 				try {
 					this.initFromFile(((TextField) n).getText());
 					this.showLoginDialog();
@@ -137,7 +119,7 @@ public class Controller {
 					ErrorPrinter.printError("showLoadFileDialog > Can’t read file '" + this.filename + "'");
 					e1.printStackTrace();
 				}
-			}else{
+			} else {
 				ErrorPrinter.printWarning("showLoadFileDialog > Didn’t find element #openFilePath!");
 			}
 		});
@@ -155,7 +137,7 @@ public class Controller {
 		this.todos = null;
 		primaryStage.setTitle("TodoList :: Log in");
 		try {
-			primaryStage.setScene(new Scene(FXMLLoader.load(getClass().getResource("login.fxml")),500,350));
+			primaryStage.setScene(new Scene(FXMLLoader.load(getClass().getResource("login.fxml")), 500, 350));
 		} catch (IOException e) {
 			ErrorPrinter.printError("showLoginDialog > Failed to open window 'login'! Goodbye!");
 			e.printStackTrace();
@@ -163,12 +145,12 @@ public class Controller {
 			return;
 		}
 		TitledPane a = (TitledPane) primaryStage.getScene().lookup(users.isEmpty() ? "#createNewUserPane" : "#loginPane");
-		if ( a != null ) {
+		if (a != null) {
 			a.setExpanded(true);
 		}
 		// Log in
 		Node n = primaryStage.getScene().lookup("#loginButton");
-		if ( n != null && n instanceof Button) {
+		if (n != null && n instanceof Button) {
 			((Button) n).setOnAction(event -> {
 				Label l = (Label) primaryStage.getScene().lookup("#labelHints");
 				String name = null;
@@ -197,11 +179,11 @@ public class Controller {
 					l.setText("Invalid credentials!");
 				}
 			});
-		}else{
+		} else {
 			ErrorPrinter.printWarning("showLoginDialog > Didn’t find element #loginButton!");
 		}
 		n = primaryStage.getScene().lookup("#registerButton");
-		if ( n != null && n instanceof Button) {
+		if (n != null && n instanceof Button) {
 			((Button) n).setOnAction(event -> {
 				Label l = (Label) primaryStage.getScene().lookup("#labelHintsCreateNewUser");
 				// username
@@ -251,15 +233,15 @@ public class Controller {
 				// log in
 				this.showMainWindow();
 			});
-		}else{
+		} else {
 			ErrorPrinter.printWarning("showLoginDialog > Didn’t find element #registerButton!");
 		}
 	}
 
 	private void showMainWindow() {
-		primaryStage.setTitle("TodoList :: " + currentUser.getUsername() +  " > Default");
+		primaryStage.setTitle("TodoList :: " + currentUser.getUsername() + " > Default");
 		try {
-			primaryStage.setScene(new Scene(FXMLLoader.load(getClass().getResource("main.fxml")),950,650));
+			primaryStage.setScene(new Scene(FXMLLoader.load(getClass().getResource("main.fxml")), 950, 650));
 		} catch (IOException e) {
 			ErrorPrinter.printError("showMainWindow > Failed to open window 'main'! Goodbye!");
 			e.printStackTrace();
@@ -267,30 +249,30 @@ public class Controller {
 			return;
 		}
 		Node n = primaryStage.getScene().lookup("#todoLists");
-		if ( n != null && n instanceof ListView) {
+		if (n != null && n instanceof ListView) {
 			ListView<TodoList> lv = (ListView<TodoList>) n;
 			lv.setItems(this.todoLists);
 			lv.scrollTo(currentUser.getTodoList("Default"));
 			lv.getSelectionModel().selectedIndexProperty().addListener(event -> {
 				this.updateSelectedTodoList();
 			});
-		}else{
+		} else {
 			ErrorPrinter.printWarning("showMainWindow > Couldn’t find element '#todoLists'");
 		}
 		this.todos = new ObservableListWrapper<>(currentUser.getTodoList("Default").getTodos());
 		n = primaryStage.getScene().lookup("#todos");
-		if ( n != null && n instanceof ListView) {
+		if (n != null && n instanceof ListView) {
 			ListView<Todo> lv = (ListView<Todo>) n;
 			lv.setItems(this.todos);
 			lv.getSelectionModel().selectedIndexProperty().addListener(event -> {
 				this.updateSelectedTodo();
 			});
 			lv.setCellFactory(param -> new TodoListCell());
-		}else{
+		} else {
 			ErrorPrinter.printWarning("showMainWindow > Couldn’t find element '#todos'");
 		}
 		n = primaryStage.getScene().lookup("#menuSave");
-		if ( n != null && n instanceof Button) {
+		if (n != null && n instanceof Button) {
 			((Button) n).setOnAction(event -> {
 				if (this.filename != null) {
 					this.export(this.filename);
@@ -298,133 +280,133 @@ public class Controller {
 					this.showSaveAs();
 				}
 			});
-		}else{
+		} else {
 			ErrorPrinter.printWarning("showMainWindow > Couln’t find element '#menuSave'");
 		}
 		n = primaryStage.getScene().lookup("#menuSaveAs");
-		if ( n != null && n instanceof Button ) {
+		if (n != null && n instanceof Button) {
 			((Button) n).setOnAction(event -> this.showSaveAs());
-		}else{
+		} else {
 			ErrorPrinter.printWarning("showMainWindow > Couldn’t find element '#menuSaveAs'");
 		}
 		n = primaryStage.getScene().lookup("#menuClose");
-		if ( n != null && n instanceof Button ) {
+		if (n != null && n instanceof Button) {
 			((Button) n).setOnAction(event -> showCloseDialog());
-		}else{
+		} else {
 			ErrorPrinter.printWarning("showMainWindow > Couldn’t find element '#menuClose'");
 		}
 		this.primaryStage.setOnCloseRequest(event -> showCloseDialog());
 		n = primaryStage.getScene().lookup("#todoDetailSave");
-		if ( n != null && n instanceof Button) {
+		if (n != null && n instanceof Button) {
 			((Button) n).setOnAction(event -> this.saveTodoEntry());
-		}else{
+		} else {
 			ErrorPrinter.printWarning("showMainWindow > Couldn’t find element '#todoDetailSave'");
 		}
 		n = primaryStage.getScene().lookup("#todoDetailDueDate");
 		if (n != null && n instanceof CheckBox) {
 			((CheckBox) n).setOnAction(event -> this.detailUpdateDueDatePicker());
-		}else{
+		} else {
 			ErrorPrinter.printWarning("showMainWindow > Couldn’t find element '#todoDetailDueDate'");
 		}
 		// handle new  TodoList
 		n = primaryStage.getScene().lookup("#todoListNew");
-		if ( n != null && n instanceof Button) {
+		if (n != null && n instanceof Button) {
 			((Button) n).setOnAction(event -> {
 				this.buttonAction = "new";
 				this.showTodoListEdit();
 			});
-		}else{
+		} else {
 			ErrorPrinter.printWarning("showMainWindow > Couln’t find element '#todoListNew'");
 		}
 		// handle edit TodoList
 		n = primaryStage.getScene().lookup("#todoListEdit");
-		if ( n != null && n instanceof Button) {
+		if (n != null && n instanceof Button) {
 			((Button) n).setOnAction(event -> {
 				this.buttonAction = "edit";
 				this.showTodoListEdit();
 			});
-		}else{
+		} else {
 			ErrorPrinter.printWarning("showMainWindow > Couldn’t find element '#todoListEdit'");
 		}
 		// handle delete TodoList
 		n = primaryStage.getScene().lookup("#todoListDelete");
-		if( n != null && n instanceof Button) {
+		if (n != null && n instanceof Button) {
 			((Button) n).setOnAction(event -> showDeleteList());
-		}else{
+		} else {
 			ErrorPrinter.printWarning("showMainWindow > Couldn’t find element '#todoListDelete'");
 		}
 		// toggle todo
 		n = primaryStage.getScene().lookup("#todoToggleDone");
-		if ( n!= null && n instanceof ToggleButton) {
+		if (n != null && n instanceof ToggleButton) {
 			((ToggleButton) n).setOnAction(event -> toggleDone());
-		}else{
+		} else {
 			ErrorPrinter.printWarning("showMainWindow > Couldn’t find element '#todoToggleDone'");
 		}
 		// toggle star
 		n = primaryStage.getScene().lookup("#todoToggleStar");
-		if ( n!= null && n instanceof ToggleButton) {
+		if (n != null && n instanceof ToggleButton) {
 			((ToggleButton) n).setOnAction(event -> toggleStar());
-		}else{
+		} else {
 			ErrorPrinter.printWarning("showMainWindow > Couldn’t find element '#todoToggleStar'");
 		}
 		// add new todo item
 		n = primaryStage.getScene().lookup("#todoNew");
-		if ( n!= null && n instanceof Button) {
+		if (n != null && n instanceof Button) {
 			((Button) n).setOnAction(event -> newTodoItem());
-		}else{
+		} else {
 			ErrorPrinter.printWarning("showMainWindow > Couldn’t find element '#todoNew'");
 		}
 		// delete todo item
 		n = primaryStage.getScene().lookup("#todoDelete");
-		if ( n != null && n instanceof Button ) {
+		if (n != null && n instanceof Button) {
 			((Button) n).setOnAction(event -> showDeleteItem());
-		}else{
+		} else {
 			ErrorPrinter.printWarning("showMainWindow > Couldn’t find element '#todoDelete'");
 		}
 		// change password
 		n = primaryStage.getScene().lookup("#menuChangePassword");
-		if ( n != null && n instanceof Button ) {
+		if (n != null && n instanceof Button) {
 			((Button) n).setOnAction(event -> showChangePassword());
-		}else{
+		} else {
 			ErrorPrinter.printWarning("showMainWindow > Couldn’t find element '#menuChangePassword'");
 		}
 		// change eMail
 		n = primaryStage.getScene().lookup("#menuChangeEmail");
-		if ( n != null && n instanceof Button ) {
+		if (n != null && n instanceof Button) {
 			((Button) n).setOnAction(event -> showChangeEmail());
-		}else{
+		} else {
 			ErrorPrinter.printWarning("showMainWindow > Couldn’t find element '#menuChangeEmail'");
 		}
 		// log out
 		n = primaryStage.getScene().lookup("#menuLogout");
-		if ( n != null && n instanceof Button) {
+		if (n != null && n instanceof Button) {
 			((Button) n).setOnAction(event -> showLoginDialog());
-		}else{
+		} else {
 			ErrorPrinter.printWarning("showMainWindow > Couldn’t find element '#menuLogout'");
 		}
 		// move todo item
 		n = primaryStage.getScene().lookup("#todoMove");
-		if ( n != null && n instanceof Button) {
+		if (n != null && n instanceof Button) {
 			((Button) n).setOnAction(event -> showMoveTodoItem());
-		}else{
+		} else {
 			ErrorPrinter.printWarning("showMainWindow > Couldn’t find element '#todoMove'");
 		}
 	}
 
 	private void updateSelectedTodoList() {
 		Node n = primaryStage.getScene().lookup("#todoLists");
-		if ( n == null || !(n instanceof ListView) ) {
+		if (n == null || !(n instanceof ListView)) {
 			ErrorPrinter.printWarning("updateSelectedTodoList > updateSelectedTodoList > Couldn’t find element '#todoLists'");
 			return;
 		}
 		ListView l = (ListView) n;
 		n = primaryStage.getScene().lookup("#todos");
-		if ( n == null || !(n instanceof ListView)) {
+		if (n == null || !(n instanceof ListView)) {
 			ErrorPrinter.printWarning("updateSelectedTodoList > updateSelectedTodoList > Couldn’t find element '#todos'");
 			return;
 		}
 		ListView<Todo> lt = (ListView) n;
-		if ( l.getSelectionModel().getSelectedItem() != null && l.getSelectionModel().getSelectedItem() instanceof TodoList ) {
+		if (l.getSelectionModel().getSelectedItem() != null && l.getSelectionModel().getSelectedItem() instanceof TodoList) {
 			TodoList t = (TodoList) l.getSelectionModel().getSelectedItem();
 			primaryStage.setTitle("TodoList :: " + currentUser.getUsername() + " > " + t.getName());
 			this.todos = new ObservableListWrapper<>(t.getTodos());
@@ -432,11 +414,11 @@ public class Controller {
 			lt.getSelectionModel().select(0);
 			// update buttons :)
 			n = primaryStage.getScene().lookup("#todoListEdit");
-			if ( n!=null && n instanceof  Button) {
+			if (n != null && n instanceof Button) {
 				n.setDisable(!t.isChangeable());
 			}
 			n = primaryStage.getScene().lookup("#todoListDelete");
-			if (n!=null && n instanceof Button) {
+			if (n != null && n instanceof Button) {
 				n.setDisable(!t.isChangeable());
 			}
 			// if there is no todo item, empty the currentTodo
@@ -447,29 +429,29 @@ public class Controller {
 
 	private void updateSelectedTodo() {
 		Node n = primaryStage.getScene().lookup("#todos");
-		if ( n != null && n instanceof ListView) {
+		if (n != null && n instanceof ListView) {
 			ListView<Todo> lv = (ListView<Todo>) n;
-			if(lv.getSelectionModel().getSelectedItem() != null) {
+			if (lv.getSelectionModel().getSelectedItem() != null) {
 				this.currentTodo = lv.getSelectionModel().getSelectedItem();
 			}
 		}
 		// title
 		n = primaryStage.getScene().lookup("#todoDetailTitle");
-		if ( n == null || !(n instanceof TextField)) {
+		if (n == null || !(n instanceof TextField)) {
 			ErrorPrinter.printWarning("updateSelectedTodo > Couldn’t find element '#todoDetailTitle'");
 			return;
 		}
-		((TextField) n).setText( this.currentTodo == null ? "" : this.currentTodo.getTitle() );
+		((TextField) n).setText(this.currentTodo == null ? "" : this.currentTodo.getTitle());
 		// comment
 		n = primaryStage.getScene().lookup("#todoDetailDescription");
-		if ( n == null || !(n instanceof TextArea) ) {
+		if (n == null || !(n instanceof TextArea)) {
 			ErrorPrinter.printWarning("updateSelectedTodo > Couldn’t find element '#todoDetailDescription'");
 			return;
 		}
-		((TextArea) n).setText( this.currentTodo == null ? "" : this.currentTodo.getComment() );
+		((TextArea) n).setText(this.currentTodo == null ? "" : this.currentTodo.getComment());
 		// if dueDate set:
 		n = primaryStage.getScene().lookup("#todoDetailDueDate");
-		if ( n == null || !(n instanceof CheckBox) ) {
+		if (n == null || !(n instanceof CheckBox)) {
 			ErrorPrinter.printWarning("updateSelectedTodo > Couldn’t find element '#todoDetailDueDate'");
 			return;
 		}
@@ -477,51 +459,51 @@ public class Controller {
 		((CheckBox) n).setSelected(dueDate);
 		// datePicker
 		n = primaryStage.getScene().lookup("#todoDetailDate");
-		if( n == null || !(n instanceof DatePicker)) {
+		if (n == null || !(n instanceof DatePicker)) {
 			ErrorPrinter.printWarning("updateSelectedTodo > Couldn’t find element '#todoDetailDate'");
 			return;
 		}
-		if(dueDate) {
-			((DatePicker) n).setValue( LocalDateTime.ofInstant(this.currentTodo.getDueDate().getTime().toInstant(), ZoneId.systemDefault()).toLocalDate() );
+		if (dueDate) {
+			((DatePicker) n).setValue(LocalDateTime.ofInstant(this.currentTodo.getDueDate().getTime().toInstant(), ZoneId.systemDefault()).toLocalDate());
 			n.setDisable(false);
-		}else{
+		} else {
 			((DatePicker) n).setValue(null);
 			n.setDisable(true);
 		}
 		// time
 		n = primaryStage.getScene().lookup("#todoDetailTime");
-		if ( n == null || !(n instanceof TextField)) {
+		if (n == null || !(n instanceof TextField)) {
 			ErrorPrinter.printWarning("updateSelectedTodo > Couldn’t find element '#todoDetailTime'");
 			return;
 		}
-		if ( dueDate ) {
-			((TextField) n).setText(this.currentTodo.getTime() );
+		if (dueDate) {
+			((TextField) n).setText(this.currentTodo.getTime());
 			n.setDisable(false);
-		}else{
+		} else {
 			n.setDisable(true);
 			((TextField) n).setText("00:00");
 		}
 		// stared
 		n = primaryStage.getScene().lookup("#todoToggleStar");
-		if ( n != null && n instanceof ToggleButton ) {
+		if (n != null && n instanceof ToggleButton) {
 			((ToggleButton) n).setSelected(currentTodo != null && currentTodo.isPrio());
-		}else{
+		} else {
 			ErrorPrinter.printWarning("updateSelectedTodo > Couldn’t find element '#todoToggleStar'");
 		}
 		// done
 		n = primaryStage.getScene().lookup("#todoToggleDone");
-		if ( n != null && n instanceof ToggleButton) {
+		if (n != null && n instanceof ToggleButton) {
 			((ToggleButton) n).setSelected(currentTodo != null && currentTodo.isDone());
-		}else{
+		} else {
 			ErrorPrinter.printWarning("updateSelectedTodo > Couldn’t find element '#todoToggleDone'");
 		}
 	}
 
 	private void updateStatusLine(String text) {
 		Node n = primaryStage.getScene().lookup("#statusLine");
-		if ( n != null && n instanceof Label) {
+		if (n != null && n instanceof Label) {
 			((Label) n).setText(text);
-		}else{
+		} else {
 			ErrorPrinter.printWarning("updateStatusLine > Couldn’t find element '#statusLine'");
 		}
 	}
@@ -533,7 +515,7 @@ public class Controller {
 	private void showSaveAs(boolean exitAfterSave) {
 		Stage save = new Stage();
 		try {
-			save.setScene(new Scene(FXMLLoader.load(getClass().getResource("saveAs.fxml")),500,150));
+			save.setScene(new Scene(FXMLLoader.load(getClass().getResource("saveAs.fxml")), 500, 150));
 		} catch (IOException e) {
 			this.updateStatusLine("Failed to open window!");
 			ErrorPrinter.printError("showSaveAs > Failed to open window 'saveAs'");
@@ -543,11 +525,11 @@ public class Controller {
 		save.setTitle("Save as ...");
 		save.show();
 		Node n = primaryStage.getScene().lookup("#filename");
-		if ( n != null && n instanceof TextField && this.filename != null ) {
-			((TextField)n).setText(this.filename);
+		if (n != null && n instanceof TextField && this.filename != null) {
+			((TextField) n).setText(this.filename);
 		}
 		Button s = (Button) save.getScene().lookup("#save");
-		if ( s != null)
+		if (s != null)
 			s.setOnAction(event -> {
 				TextField f = (TextField) save.getScene().lookup("#filename");
 				if (f != null) {
@@ -570,19 +552,19 @@ public class Controller {
 	}
 
 	private void saveTodoEntry() {
-		if ( this.currentTodo == null ) {
+		if (this.currentTodo == null) {
 			this.updateStatusLine("No item selected!");
 			return;
 		}
 		Node lv = primaryStage.getScene().lookup("#todos");
-		if ( lv == null || !(lv instanceof ListView)) {
+		if (lv == null || !(lv instanceof ListView)) {
 			this.updateStatusLine("Could’t get todo-ListView!");
 			ErrorPrinter.printWarning("saveTodoEntry > Didn’t find element #todos!");
 			return;
 		}
 		// title
 		Node n = primaryStage.getScene().lookup("#todoDetailTitle");
-		if ( n == null || !(n instanceof TextField)) {
+		if (n == null || !(n instanceof TextField)) {
 			this.updateStatusLine("Couldn’t load data from todoDetailTitle");
 			ErrorPrinter.printWarning("saveTodoEntry > Didn’t find element #todoDetailTitle!");
 			return;
@@ -590,7 +572,7 @@ public class Controller {
 		this.currentTodo.setTitle(((TextField) n).getText());
 		// description
 		n = primaryStage.getScene().lookup("#todoDetailDescription");
-		if ( n == null || !(n instanceof TextArea)) {
+		if (n == null || !(n instanceof TextArea)) {
 			this.updateStatusLine("Couldn’t load data from todoDetailDescription");
 			ErrorPrinter.printWarning("saveTodoEntry > Didn’t find element #statusLine!");
 			return;
@@ -598,14 +580,14 @@ public class Controller {
 		this.currentTodo.setComment(((TextArea) n).getText());
 		// date
 		n = primaryStage.getScene().lookup("#todoDetailDueDate");
-		if ( n == null || !(n instanceof CheckBox)) {
+		if (n == null || !(n instanceof CheckBox)) {
 			this.updateStatusLine("Couldn’t load data from todoDetailDueDate");
 			ErrorPrinter.printWarning("saveTodoEntry > Didn’t find element #todoDetailDueDate!");
 			return;
 		}
-		if ( !((CheckBox) n).isSelected() ) {
+		if (!((CheckBox) n).isSelected()) {
 			this.currentTodo.setDueDate(null);
-		}else{
+		} else {
 			n = primaryStage.getScene().lookup("#todoDetailDate");
 			if (n == null || !(n instanceof DatePicker)) {
 				this.updateStatusLine("Couldn’t load data from todoDetailDate");
@@ -620,7 +602,7 @@ public class Controller {
 				ErrorPrinter.printWarning("saveTodoEntry > Didn’t find element #todoDetailDate!");
 				return;
 			}
-			if ( dd == null ) {
+			if (dd == null) {
 				this.updateStatusLine("Invalid date!");
 				return;
 			}
@@ -636,21 +618,21 @@ public class Controller {
 
 	private void detailUpdateDueDatePicker() {
 		Node n = primaryStage.getScene().lookup("#todoDetailDueDate");
-		if ( n == null || !(n instanceof CheckBox)) {
+		if (n == null || !(n instanceof CheckBox)) {
 			this.updateStatusLine("Couldn’t load data from todoDetailDueDate");
 			ErrorPrinter.printWarning("detailUpdateDueDatePicker > Didn’t find element #todoDetailDueDate!");
 			return;
 		}
 		boolean enable = ((CheckBox) n).isSelected();
 		n = primaryStage.getScene().lookup("#todoDetailDate");
-		if ( n == null || !(n instanceof DatePicker)) {
+		if (n == null || !(n instanceof DatePicker)) {
 			this.updateStatusLine("Couldn’t load data from todoDetailDate");
 			ErrorPrinter.printWarning("detailUpdateDueDatePicker > Didn’t find element #todoDetailDue!");
 			return;
 		}
 		n.setDisable(!enable);
 		n = primaryStage.getScene().lookup("#todoDetailTime");
-		if ( n == null || !(n instanceof TextField)) {
+		if (n == null || !(n instanceof TextField)) {
 			this.updateStatusLine("Couldn’t load data from todoDetailTime");
 			ErrorPrinter.printWarning("detailUpdateDueDatePicker > Didn’t find element #todoDetailTime!");
 			return;
@@ -660,7 +642,7 @@ public class Controller {
 
 	private void showTodoListEdit() {
 		Node n = this.primaryStage.getScene().lookup("#todoListToolBar");
-		if ( n == null || !(n instanceof ToolBar)) {
+		if (n == null || !(n instanceof ToolBar)) {
 			this.updateStatusLine("Couldn’t get 'todoListToolBar'");
 			ErrorPrinter.printWarning("showTodoListEdit > Didn’t find element #todoListToolBar!");
 			return;
@@ -668,48 +650,48 @@ public class Controller {
 		n.setDisable(false);
 		n.setVisible(true);
 		n = primaryStage.getScene().lookup("#todoListNewNameSave");
-		if ( n != null && n instanceof Button) {
+		if (n != null && n instanceof Button) {
 			((Button) n).setOnAction(event -> this.saveTodoListEdit());
-		}else{
+		} else {
 			ErrorPrinter.printError("showTodoListEdit > Couldn’t read 'todoListNewNameSave'");
 		}
 		n = primaryStage.getScene().lookup("#todoListNewName");
-		if ( n == null || !(n instanceof TextField)) {
+		if (n == null || !(n instanceof TextField)) {
 			this.updateStatusLine("Couldn’t get 'todoListNewName'");
 			ErrorPrinter.printWarning("showTodoListEdit > Didn’t find element #todoListNewName!");
 			return;
 		}
-		if ( this.buttonAction.equals("edit")) {
+		if (this.buttonAction.equals("edit")) {
 			Node l = primaryStage.getScene().lookup("#todoLists");
-			if ( l == null || !(l instanceof ListView) ) {
+			if (l == null || !(l instanceof ListView)) {
 				this.updateStatusLine("Couldn’t get 'todoLists'");
 				ErrorPrinter.printWarning("showTodoListEdit > Didn’t find element #todoLists!");
 				return;
 			}
 			ListView lv = (ListView) l;
-			if ( lv.getSelectionModel().getSelectedItem() != null && lv.getSelectionModel().getSelectedItem() instanceof TodoList ) {
-				((TextField) n).setText(((TodoList)lv.getSelectionModel().getSelectedItem()).getName());
-			}else{
+			if (lv.getSelectionModel().getSelectedItem() != null && lv.getSelectionModel().getSelectedItem() instanceof TodoList) {
+				((TextField) n).setText(((TodoList) lv.getSelectionModel().getSelectedItem()).getName());
+			} else {
 				((TextField) n).setText("Unknown Name");
 			}
-		}else {
+		} else {
 			((TextField) n).setText("New TodoList");
 		}
 	}
 
 	private void saveTodoListEdit() {
 		Node n = primaryStage.getScene().lookup("#todoListNewName");
-		if ( n == null || !(n instanceof TextField)) {
+		if (n == null || !(n instanceof TextField)) {
 			this.updateStatusLine("Couldn’t get 'todoListNewName'");
 			ErrorPrinter.printWarning("saveTodoListEdit > Didn’t find element #todoListNewName!");
 			return;
 		}
 		String name = ((TextField) n).getText();
 		((TextField) n).setText("");
-		if ( this.buttonAction.equals("new")) {
+		if (this.buttonAction.equals("new")) {
 			this.todoLists.add(new TodoList(name));
 			this.updateStatusLine("New TodoList generated!");
-		}else {
+		} else {
 			// edit existing one ...
 			n = primaryStage.getScene().lookup("#todoLists");
 			if (n == null || !(n instanceof ListView)) {
@@ -724,7 +706,7 @@ public class Controller {
 			}
 		}
 		n = this.primaryStage.getScene().lookup("#todoListToolBar");
-		if ( n == null || !(n instanceof ToolBar)) {
+		if (n == null || !(n instanceof ToolBar)) {
 			ErrorPrinter.printWarning("saveTodoListEdit > Didn’t find element #todoListToolBar!");
 			return;
 		}
@@ -733,29 +715,29 @@ public class Controller {
 	}
 
 	private void toggleDone() {
-		if(this.currentTodo == null)
+		if (this.currentTodo == null)
 			return;
 		Node n = primaryStage.getScene().lookup("#todoToggleDone");
-		if ( n == null || !(n instanceof ToggleButton) ) {
+		if (n == null || !(n instanceof ToggleButton)) {
 			ErrorPrinter.printWarning("toggleDone > Didn’t find element #todoToggleDone!");
 			return;
 		}
 		this.currentTodo.setDone(!this.currentTodo.isDone());
 		((ToggleButton) n).setSelected(this.currentTodo.isDone());
-		this.notifyList(todos,currentTodo);
+		this.notifyList(todos, currentTodo);
 	}
 
 	private void toggleStar() {
-		if(this.currentTodo == null)
+		if (this.currentTodo == null)
 			return;
 		Node n = primaryStage.getScene().lookup("#todoToggleStar");
-		if ( n == null || !(n instanceof ToggleButton) ) {
+		if (n == null || !(n instanceof ToggleButton)) {
 			ErrorPrinter.printWarning("toggleStar > Didn’t find element #todoToggleStar!");
 			return;
 		}
 		this.currentTodo.setPrio(!this.currentTodo.isPrio());
 		((ToggleButton) n).setSelected(this.currentTodo.isPrio());
-		this.notifyList(todos,currentTodo);
+		this.notifyList(todos, currentTodo);
 	}
 
 	private void newTodoItem() {
@@ -763,7 +745,7 @@ public class Controller {
 		this.todos.add(t);
 		this.updateStatusLine("Item added!");
 		Node n = primaryStage.getScene().lookup("#todos");
-		if ( n == null || !(n instanceof ListView) ) {
+		if (n == null || !(n instanceof ListView)) {
 			ErrorPrinter.printWarning("newTodoItem > Didn’t find element #todos!");
 			return;
 		}
@@ -781,13 +763,13 @@ public class Controller {
 			e.printStackTrace();
 			return;
 		}
-		delete.setTitle("Delete '"+this.currentTodo.getTitle()+"'");
+		delete.setTitle("Delete '" + this.currentTodo.getTitle() + "'");
 		delete.show();
 		Node n = delete.getScene().lookup("#no");
-		if ( n != null && n instanceof Button)
-			((Button)n).setOnAction(event -> delete.close());
+		if (n != null && n instanceof Button)
+			((Button) n).setOnAction(event -> delete.close());
 		n = delete.getScene().lookup("#yes");
-		if ( n != null && n instanceof Button )
+		if (n != null && n instanceof Button)
 			((Button) n).setOnAction(event -> {
 				this.todos.remove(this.currentTodo);
 				this.updateStatusLine("Deleted item!");
@@ -814,17 +796,17 @@ public class Controller {
 		TodoList t;
 		if (l.getSelectionModel().getSelectedItem() != null && l.getSelectionModel().getSelectedItem() instanceof TodoList) {
 			t = (TodoList) l.getSelectionModel().getSelectedItem();
-		}else {
+		} else {
 			ErrorPrinter.printWarning("showDeleteList > Didn’t find selected item!");
 			return;
 		}
-		delete.setTitle("Delete '"+t.getName()+"'");
+		delete.setTitle("Delete '" + t.getName() + "'");
 		delete.show();
 		n = delete.getScene().lookup("#no");
-		if ( n != null && n instanceof Button)
-			((Button)n).setOnAction(event -> delete.close());
+		if (n != null && n instanceof Button)
+			((Button) n).setOnAction(event -> delete.close());
 		n = delete.getScene().lookup("#yes");
-		if ( n != null && n instanceof Button )
+		if (n != null && n instanceof Button)
 			((Button) n).setOnAction(event -> {
 				this.todoLists.remove(t);
 				this.updateStatusLine("Deleted TodoList!");
@@ -844,19 +826,19 @@ public class Controller {
 		change.setTitle("Change password");
 		change.show();
 		Node n = change.getScene().lookup("#status");
-		if ( n == null || !(n instanceof Label)) {
+		if (n == null || !(n instanceof Label)) {
 			ErrorPrinter.printWarning("showChangePassword > Didn’t find element #status!");
 			return;
 		}
 		Label status = (Label) n;
 		n = change.getScene().lookup("#abort");
-		if ( n == null || !(n instanceof Button)) {
+		if (n == null || !(n instanceof Button)) {
 			ErrorPrinter.printWarning("showChangePassword > Didn’t find element #abort!");
 			return;
 		}
 		((Button) n).setOnAction(event -> change.close());
 		n = change.getScene().lookup("#save");
-		if ( n == null || !(n instanceof Button)) {
+		if (n == null || !(n instanceof Button)) {
 			ErrorPrinter.printWarning("showChangePassword > Didn’t find element #save!");
 			return;
 		}
@@ -864,31 +846,31 @@ public class Controller {
 			String pw;
 			// validate passwords ...
 			Node l = change.getScene().lookup("#password");
-			if ( l == null || !(l instanceof PasswordField)) {
+			if (l == null || !(l instanceof PasswordField)) {
 				ErrorPrinter.printWarning("showChangePassword > Didn’t find element #password!");
 				return;
 			}
-			if (!currentUser.checkLoginData( ((PasswordField) l).getText() )) {
+			if (!currentUser.checkLoginData(((PasswordField) l).getText())) {
 				status.setText("Wrong password!");
 				return;
 			}
 			l = change.getScene().lookup("#newPassword");
-			if ( l == null || !(l instanceof PasswordField)) {
+			if (l == null || !(l instanceof PasswordField)) {
 				ErrorPrinter.printWarning("showChangePassword > Didn’t find element #newPassword!");
 				return;
 			}
-			pw = ((PasswordField)l).getText();
+			pw = ((PasswordField) l).getText();
 			if (!User.checkPassword(pw)) {
 				status.setText("Please use at least 6 chars, upper- and lowercase and numbers!");
 				return;
 			}
 			l = change.getScene().lookup("#newPasswordRepeat");
-			if ( l == null || !(l instanceof PasswordField)) {
+			if (l == null || !(l instanceof PasswordField)) {
 				status.setText("Couldn’t access newPasswordRepeat field!");
 				ErrorPrinter.printWarning("showChangePassword > Didn’t find element #newPasswordRepeat!");
 				return;
 			}
-			if ( !pw.equals( ((PasswordField) l).getText() )) {
+			if (!pw.equals(((PasswordField) l).getText())) {
 				status.setText("Passwords didn’t match!");
 				return;
 			}
@@ -909,33 +891,33 @@ public class Controller {
 		change.setTitle("Change eMail");
 		change.show();
 		Node n = change.getScene().lookup("#status");
-		if ( n == null || !(n instanceof Label)) {
+		if (n == null || !(n instanceof Label)) {
 			ErrorPrinter.printWarning("showChangeEmail > Didn’t find element #status!");
 			return;
 		}
 		Label status = (Label) n;
 		// load current email address
 		n = change.getScene().lookup("#eMail");
-		if ( n == null || !(n instanceof TextField)) {
+		if (n == null || !(n instanceof TextField)) {
 			ErrorPrinter.printWarning("showChangeEmail > Didn’t find element #eMail!");
 			return;
 		}
 		((TextField) n).setText(this.currentUser.getEmail());
 		n = change.getScene().lookup("#eMailRepeat");
-		if ( n == null || !(n instanceof TextField)) {
+		if (n == null || !(n instanceof TextField)) {
 			ErrorPrinter.printWarning("showChangeEmail > Didn’t find element #eMailRepeat!");
 			return;
 		}
 		((TextField) n).setText(this.currentUser.getEmail());
 		// actions
 		n = change.getScene().lookup("#abort");
-		if ( n == null || !(n instanceof Button)) {
+		if (n == null || !(n instanceof Button)) {
 			ErrorPrinter.printWarning("showChangeEmail > Didn’t find element #abort!");
 			return;
 		}
 		((Button) n).setOnAction(event -> change.close());
 		n = change.getScene().lookup("#save");
-		if ( n == null || !(n instanceof Button)) {
+		if (n == null || !(n instanceof Button)) {
 			ErrorPrinter.printWarning("showChangeEmail > Didn’t find element #save!");
 			return;
 		}
@@ -943,7 +925,7 @@ public class Controller {
 			String email;
 			// validate passwords ...
 			Node l = change.getScene().lookup("#eMail");
-			if ( l == null || !(l instanceof TextField)) {
+			if (l == null || !(l instanceof TextField)) {
 				status.setText("Couldn’t access eMail field!");
 				ErrorPrinter.printWarning("showChangeEmail > Didn’t find element #eMail!");
 				return;
@@ -954,12 +936,12 @@ public class Controller {
 				return;
 			}
 			l = change.getScene().lookup("#eMailRepeat");
-			if ( l == null || !(l instanceof TextField)) {
+			if (l == null || !(l instanceof TextField)) {
 				status.setText("Couldn’t access eMailRepeat field!");
 				ErrorPrinter.printWarning("showChangeEmail > Didn’t find element #eMailRepeat!");
 				return;
 			}
-			if ( !email.equals( ((TextField) l).getText() )) {
+			if (!email.equals(((TextField) l).getText())) {
 				status.setText("eMails didn’t match!");
 				return;
 			}
@@ -980,13 +962,13 @@ public class Controller {
 		close.setTitle("Close program?");
 		close.show();
 		Node n = close.getScene().lookup("#abort");
-		if ( n == null || !(n instanceof Button)) {
+		if (n == null || !(n instanceof Button)) {
 			ErrorPrinter.printWarning("showCloseDialog > Didn’t find element #abort");
 			return;
 		}
 		((Button) n).setOnAction(event -> close.close());
 		n = close.getScene().lookup("#save");
-		if ( n == null || !(n instanceof Button)) {
+		if (n == null || !(n instanceof Button)) {
 			ErrorPrinter.printWarning("showCloseDialog > Didn’t find element #save");
 			return;
 		}
@@ -999,7 +981,7 @@ public class Controller {
 			}
 		});
 		n = close.getScene().lookup("#close");
-		if ( n == null || !(n instanceof Button)) {
+		if (n == null || !(n instanceof Button)) {
 			ErrorPrinter.printWarning("showCloseDialog > Didn’t find element #close");
 			return;
 		}
@@ -1019,7 +1001,7 @@ public class Controller {
 		move.show();
 		// fill in the gaps :)
 		Node n = move.getScene().lookup("#title");
-		if ( n == null || !(n instanceof TextField)) {
+		if (n == null || !(n instanceof TextField)) {
 			ErrorPrinter.printWarning("showMoveTodoItem > Didn’t find element #title");
 			return;
 		}
@@ -1034,19 +1016,19 @@ public class Controller {
 		TodoList t;
 		if (l.getSelectionModel().getSelectedItem() != null && l.getSelectionModel().getSelectedItem() instanceof TodoList) {
 			t = (TodoList) l.getSelectionModel().getSelectedItem();
-		}else {
+		} else {
 			ErrorPrinter.printWarning("showDeleteList > Didn’t find selected item!");
 			return;
 		}
 		n = move.getScene().lookup("#source");
-		if ( n == null || !(n instanceof TextField)) {
+		if (n == null || !(n instanceof TextField)) {
 			ErrorPrinter.printWarning("showDeleteList > Didn’t find element #source");
 			return;
 		}
 		((TextField) n).setText(t.getName());
 		// populate dropdown
 		n = move.getScene().lookup("#destination");
-		if ( n == null || !(n instanceof ChoiceBox)) {
+		if (n == null || !(n instanceof ChoiceBox)) {
 			ErrorPrinter.printWarning("showDeleteList > Didn’t find element #destination");
 			return;
 		}
@@ -1054,14 +1036,14 @@ public class Controller {
 		c.setItems(this.todoLists);
 		// event handlers
 		n = move.getScene().lookup("#abort");
-		if ( n == null || !(n instanceof Button)) {
+		if (n == null || !(n instanceof Button)) {
 			ErrorPrinter.printWarning("showDeleteList > Didn’t find element #abort");
 			move.close();
 			return;
 		}
 		((Button) n).setOnAction(event -> move.close());
 		n = move.getScene().lookup("#move");
-		if ( n == null || !(n instanceof Button)) {
+		if (n == null || !(n instanceof Button)) {
 			ErrorPrinter.printWarning("showDeleteList > Didn’t find element #move");
 			move.close();
 			return;
@@ -1069,7 +1051,7 @@ public class Controller {
 		((Button) n).setOnAction(event -> {
 			// first add the item to the destination
 			TodoList list = c.getSelectionModel().getSelectedItem();
-			if ( list == null ) {
+			if (list == null) {
 				ErrorPrinter.printWarning("showDeleteList > Invalid selection!");
 				this.updateStatusLine("Invalid selection!");
 				return;
@@ -1085,7 +1067,8 @@ public class Controller {
 	/**
 	 * Notify a list about a changed item
 	 * Taken from: http://stackoverflow.com/a/21435063
-	 * @param list the list containing the changed item
+	 *
+	 * @param list        the list containing the changed item
 	 * @param changedItem the item itself
 	 */
 	protected void notifyList(List list, Object changedItem) {
@@ -1096,6 +1079,26 @@ public class Controller {
 			list.set(index, null);
 			// good enough since jdk7u40 and jdk8
 			list.set(index, changedItem);
+		}
+	}
+
+	static class TodoListCell extends ListCell<Todo> {
+		@Override
+		public void updateItem(Todo item, boolean empty) {
+			super.updateItem(item, empty);
+			if (!empty && item != null) {
+				if (item.isPrio() && !item.isDone()) {
+					this.setStyle("-fx-graphic:url(/de/t_battermann/dhbw/todolist/star.png);");
+				} else {
+					this.setStyle("-fx-graphic:null;");
+				}
+				this.setTextFill(Paint.valueOf(item.isDone() ? "#999999" : (item.pastDue() ? "#aa0000" : "#000000")));
+				this.setText(item.getTitle() + (item.getDueDate() != null ? " (due: " + item.getDateTime() + ")" : ""));
+			} else {
+				this.setStyle("-fx-graphic:null;");
+				this.setTextFill(Paint.valueOf("#000000"));
+				this.setText("");
+			}
 		}
 	}
 

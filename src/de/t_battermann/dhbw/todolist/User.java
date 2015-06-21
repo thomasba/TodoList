@@ -3,7 +3,9 @@ package de.t_battermann.dhbw.todolist;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.validator.routines.EmailValidator;
 
-import java.util.*;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.UUID;
 
 /**
  * This class contains all the users data.
@@ -35,10 +37,10 @@ public class User {
 	 * Instantiates a new User.
 	 * Used to restore saved data
 	 *
-	 * @param uuid		   the uuid
-	 * @param username	   the username
+	 * @param uuid           the uuid
+	 * @param username       the username
 	 * @param hashedPassword the hashed password
-	 * @param email		  the email
+	 * @param email          the email
 	 */
 	protected User(String uuid, String username, String hashedPassword, String email) {
 		this.username = username;
@@ -46,6 +48,24 @@ public class User {
 		this.password = hashedPassword;
 		this.email = email;
 		this.todoLists = new LinkedList<>();
+	}
+
+	/**
+	 * Checks if eMail has correct syntax
+	 *
+	 * @param email string containing a eMail address
+	 * @return true if valid syntax
+	 */
+	public static boolean checkEmail(String email) {
+		return email.length() != 0 && EmailValidator.getInstance().isValid(email);
+	}
+
+	public static boolean checkUsername(String username) {
+		return username.matches("[a-zA-Z0-9_-]{3,}");
+	}
+
+	public static boolean checkPassword(String password) {
+		return password.length() > 6 && password.matches(".*[A-Z].*") && password.matches(".*[a-z].*") && password.matches(".*[0-9].*");
 	}
 
 	/**
@@ -64,6 +84,15 @@ public class User {
 	 */
 	protected String getPassword() {
 		return this.password;
+	}
+
+	/**
+	 * Update the users password
+	 *
+	 * @param password the password (cleartext)
+	 */
+	public void setPassword(String password) {
+		this.password = hashPassword(password);
 	}
 
 	/**
@@ -91,8 +120,8 @@ public class User {
 	 * @return the todo list
 	 */
 	public TodoList getTodoList(String name) {
-		for(TodoList l: todoLists)
-			if(l.getName().equals(name))
+		for (TodoList l : todoLists)
+			if (l.getName().equals(name))
 				return l;
 		ErrorPrinter.printDebug("TodoList not found: " + name);
 		return null;
@@ -121,7 +150,7 @@ public class User {
 	@Override
 	public String toString() {
 		return "Username: " + username + "\n"
-			 + "eMail:    " + email + "\n";
+				+ "eMail:    " + email + "\n";
 	}
 
 	/**
@@ -131,21 +160,12 @@ public class User {
 	 * @return false if a list with the given name already exists
 	 */
 	public boolean addTodoList(TodoList todoList) {
-		if ( this.getTodoList( todoList.getName()) == null ) {
+		if (this.getTodoList(todoList.getName()) == null) {
 			this.todoLists.add(todoList);
 			return true;
 		}
 		ErrorPrinter.printDebug("addTodoList > A TodoList named '" + todoList.getName() + "' already exists!");
 		return false;
-	}
-
-	/**
-	 * Update the users password
-	 *
-	 * @param password the password (cleartext)
-	 */
-	public void setPassword(String password) {
-		this.password = hashPassword(password);
 	}
 
 	/**
@@ -171,21 +191,5 @@ public class User {
 	 */
 	private String hashPassword(String password) {
 		return DigestUtils.sha256Hex(uuid + password);
-	}
-
-	/**
-	 * Checks if eMail has correct syntax
-	 * @param email string containing a eMail address
-	 * @return true if valid syntax
-	 */
-	public static boolean checkEmail(String email) {
-		return email.length() != 0 && EmailValidator.getInstance().isValid(email);
-	}
-
-	public static boolean checkUsername(String username) {
-		return username.matches("[a-zA-Z0-9_-]{3,}");
-	}
-	public static boolean checkPassword(String password) {
-		return password.length() > 6 && password.matches(".*[A-Z].*") && password.matches(".*[a-z].*") && password.matches(".*[0-9].*");
 	}
 }

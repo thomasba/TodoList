@@ -14,7 +14,7 @@ import java.util.TreeMap;
 
 /**
  * Export the user data in a CSV file
- *
+ * <p>
  * File format:
  * USER,uuid,username,password,email
  * TODOLIST,username,uuid,name,changeable
@@ -34,15 +34,15 @@ public class CSVHandler implements ExportHandler {
 		// date formatter
 		SimpleDateFormat format = new SimpleDateFormat();
 		format.applyPattern("yyyyMMdd'T'HH:mm:ssZ");
-		for( User user: users.values()) {
-			String userData[] = { "USER", user.getUuid(), user.getUsername(), user.getPassword(), user.getEmail() };
+		for (User user : users.values()) {
+			String userData[] = {"USER", user.getUuid(), user.getUsername(), user.getPassword(), user.getEmail()};
 			w.writeNext(userData);
-			for( TodoList list: user.getTodoLists() ) {
-				String listData[] = { "TODOLIST", user.getUsername(), list.getUuid(), list.getName(), list.isChangeable() ? "true" : "false" };
+			for (TodoList list : user.getTodoLists()) {
+				String listData[] = {"TODOLIST", user.getUsername(), list.getUuid(), list.getName(), list.isChangeable() ? "true" : "false"};
 				w.writeNext(listData);
-				for( Todo todo: list.getTodos() ) {
-					String todoData[] = { "TODO", user.getUsername(), list.getName(), todo.getUuid(), todo.getTitle(), todo.getComment(),
-							todo.getDueDate() == null ? "0" : format.format(todo.getDueDate().getTime()), todo.isDone() ? "true" : "false", todo.isPrio() ? "true" : "false" };
+				for (Todo todo : list.getTodos()) {
+					String todoData[] = {"TODO", user.getUsername(), list.getName(), todo.getUuid(), todo.getTitle(), todo.getComment(),
+							todo.getDueDate() == null ? "0" : format.format(todo.getDueDate().getTime()), todo.isDone() ? "true" : "false", todo.isPrio() ? "true" : "false"};
 					w.writeNext(todoData);
 				}
 			}
@@ -54,7 +54,7 @@ public class CSVHandler implements ExportHandler {
 	public void exportToFile(Map<String, User> users, File file) throws IOException {
 		FileWriter fw = new FileWriter(file);
 		BufferedWriter bw = new BufferedWriter(fw);
-		bw.write( doExport(users) );
+		bw.write(doExport(users));
 		bw.close();
 	}
 
@@ -70,7 +70,7 @@ public class CSVHandler implements ExportHandler {
 	 * @return Either the date (if found) or null
 	 */
 	private Calendar stringToDate(String date) {
-		if ( date.equals("0") )
+		if (date.equals("0"))
 			return null;
 		SimpleDateFormat format = new SimpleDateFormat();
 		format.applyPattern("yyyyMMdd'T'HH:mm:ssZ");
@@ -97,40 +97,40 @@ public class CSVHandler implements ExportHandler {
 		CSVParser c = new CSVParser();
 		String csv, line[];
 		Map<String, User> users = new TreeMap<>();
-		while((csv = r.readLine()) != null) {
+		while ((csv = r.readLine()) != null) {
 			line = c.parseLine(csv);
-			switch( line[0] ) {
+			switch (line[0]) {
 				case "USER":
-					if ( line.length != 5 ) {
+					if (line.length != 5) {
 						throw new InvalidDataException("Invalid user: line doesn’t contain 5 elements");
-					}else if ( users.containsKey( line[2] ) ) {
+					} else if (users.containsKey(line[2])) {
 						throw new InvalidDataException("Invalid user: duplicate User!");
-					}else {
+					} else {
 						User u = new User(line[1], line[2], line[3], line[4]);
 						users.put(line[2], u);
 					}
 					break;
 				case "TODOLIST":
-					if ( line.length != 5 ) {
+					if (line.length != 5) {
 						throw new InvalidDataException("Invalid TodoList: line doesn’t contain 5 elements");
-					} else if ( !users.containsKey(line[1]) ) {
+					} else if (!users.containsKey(line[1])) {
 						throw new InvalidDataException("Invalid TodoList: User not found!");
-					} else if ( users.get(line[1]).getTodoList(line[3]) != null) {
+					} else if (users.get(line[1]).getTodoList(line[3]) != null) {
 						throw new InvalidDataException("Invalid TodoList: duplicate TodoList!");
 					} else {
-						TodoList t = new TodoList(line[2],line[3],line[4].equals("true"));
+						TodoList t = new TodoList(line[2], line[3], line[4].equals("true"));
 						users.get(line[1]).addTodoList(t);
 					}
 					break;
 				case "TODO":
-					if ( line.length != 9 ) {
+					if (line.length != 9) {
 						throw new InvalidDataException("Invalid Todo: line doesn’t contain 9 elements" + line.length);
-					} else if ( !users.containsKey(line[1]) ) {
+					} else if (!users.containsKey(line[1])) {
 						throw new InvalidDataException("Invalid Todo: User not found!");
-					} else if ( users.get(line[1]).getTodoList(line[2]) == null) {
+					} else if (users.get(line[1]).getTodoList(line[2]) == null) {
 						throw new InvalidDataException("Invalid Todo: TodoList not found!");
 					} else {
-						Todo t = new Todo( line[3], line[4], line[5], stringToDate(line[6]), line[7].equals("true"), line[8].equals("true") );
+						Todo t = new Todo(line[3], line[4], line[5], stringToDate(line[6]), line[7].equals("true"), line[8].equals("true"));
 						users.get(line[1]).getTodoList(line[2]).addTodo(t);
 					}
 					break;

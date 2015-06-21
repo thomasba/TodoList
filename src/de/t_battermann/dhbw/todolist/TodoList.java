@@ -1,6 +1,8 @@
 package de.t_battermann.dhbw.todolist;
 
-import java.util.*;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.UUID;
 
 /**
  * This class contains a todo list with all its items.

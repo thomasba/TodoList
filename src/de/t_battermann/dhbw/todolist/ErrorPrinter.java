@@ -19,7 +19,7 @@ public class ErrorPrinter {
 		System.out.println("[" + format.format(GregorianCalendar.getInstance().getTime()) + " " + p + "] " + s);
 	}
 
-	public static void printInfo( String s) {
+	public static void printInfo(String s) {
 		ErrorPrinter.printInfo("info", s);
 	}
 

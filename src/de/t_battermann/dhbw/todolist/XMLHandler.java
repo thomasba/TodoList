@@ -19,7 +19,10 @@ import java.io.*;
 import java.nio.charset.Charset;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
+import java.util.Map;
+import java.util.TreeMap;
 
 /**
  * This class implement the ExportHandler interface. It converts the data to XML and vice versa.
@@ -156,8 +159,8 @@ public class XMLHandler implements ExportHandler {
 	/**
 	 * Get a boolean value from a attribute
 	 *
-	 * @param node		 The node to be searched in
-	 * @param name		 The attributes name
+	 * @param node         The node to be searched in
+	 * @param name         The attributes name
 	 * @param defaultValue if the attribute is not set use this value
 	 * @return either the value of the attribute or the default value if attribute not found
 	 */

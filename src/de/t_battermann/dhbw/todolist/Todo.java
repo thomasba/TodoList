@@ -27,12 +27,12 @@ public class Todo {
 	/**
 	 * Instantiates a new Todo.
 	 *
-	 * @param uuid	the uuid
+	 * @param uuid    the uuid
 	 * @param title   the title
 	 * @param comment the comment
 	 * @param dueDate the due date
-	 * @param done	Is the item done?
-	 * @param prio	Has the item high priority?
+	 * @param done    Is the item done?
+	 * @param prio    Has the item high priority?
 	 */
 	protected Todo(String uuid, String title, String comment, Calendar dueDate, boolean done, boolean prio) {
 		this.uuid = uuid;
@@ -174,24 +174,24 @@ public class Todo {
 		Calendar nd = new GregorianCalendar();
 		int hour = 0;
 		int minute = 0;
-		if ( time.matches("\\d{1,2}:\\d{1,2}(:\\d{1,2})?") ) {
+		if (time.matches("\\d{1,2}:\\d{1,2}(:\\d{1,2})?")) {
 			String t[] = time.split(":", 3);
 			hour = Integer.parseInt(t[0]);
 			minute = Integer.parseInt(t[1]);
-		}else if( time.matches("\\d{1,4}") ) {
-			if ( time.length() > 2 ) {
+		} else if (time.matches("\\d{1,4}")) {
+			if (time.length() > 2) {
 				hour = Integer.parseInt(time.substring(0, 2));
 				minute = Integer.parseInt(time.substring(2, 2));
-			}else{
-				hour = Integer.parseInt( time );
+			} else {
+				hour = Integer.parseInt(time);
 			}
 		}
-		nd.set(date.getYear(), date.getMonthValue(), date.getDayOfMonth(), hour<24?hour:0, minute<60?minute:0);
+		nd.set(date.getYear(), date.getMonthValue(), date.getDayOfMonth(), hour < 24 ? hour : 0, minute < 60 ? minute : 0);
 		this.dueDate = nd;
 	}
 
 	public boolean pastDue() {
-		if ( this.dueDate == null )
+		if (this.dueDate == null)
 			return false;
 		Calendar today = new GregorianCalendar();
 		return today.after(this.dueDate);
