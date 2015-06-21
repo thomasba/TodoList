@@ -13,7 +13,17 @@ A project for class "programming 2" at Baden-Wuerttemberg Cooperative State Univ
 
 ## Todo
 
-- Implement CSVHandler to save CSV data
 - Highlight items with priority
 - Highlight items past due (and TodoList!)
 - filter items (include/exclude done items)
+
+## Dependencies
+
+- [Apache Commons Lang](https://commons.apache.org/proper/commons-lang/)
+- [Apache Commons Validator](https://commons.apache.org/proper/commons-validator/)
+- [Apache Commons Codec](https://commons.apache.org/proper/commons-codec/download_codec.cgi)
+
+or simply:
+
+    cd ext
+    bash get-dependencies.sh
