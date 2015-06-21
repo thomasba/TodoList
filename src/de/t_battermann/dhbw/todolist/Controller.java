@@ -253,6 +253,7 @@ public class Controller {
 			ListView<TodoList> lv = (ListView<TodoList>) n;
 			lv.setItems(this.todoLists);
 			lv.scrollTo(currentUser.getTodoList("Default"));
+			lv.getSelectionModel().select(currentUser.getTodoList("Default"));
 			lv.getSelectionModel().selectedIndexProperty().addListener(event -> {
 				this.updateSelectedTodoList();
 			});
@@ -264,6 +265,9 @@ public class Controller {
 		if (n != null && n instanceof ListView) {
 			ListView<Todo> lv = (ListView<Todo>) n;
 			lv.setItems(this.todos);
+			if (!this.todos.isEmpty()) {
+				lv.getSelectionModel().select(0);
+			}
 			lv.getSelectionModel().selectedIndexProperty().addListener(event -> {
 				this.updateSelectedTodo();
 			});
@@ -1009,7 +1013,7 @@ public class Controller {
 		// get current TodoList
 		n = primaryStage.getScene().lookup("#todoLists");
 		if (n == null || !(n instanceof ListView)) {
-			ErrorPrinter.printWarning("showDeleteList > Didn’t find element #todoLists!");
+			ErrorPrinter.printWarning("showMoveTodoItem > Didn’t find element #todoLists!");
 			return;
 		}
 		ListView l = (ListView) n;
@@ -1017,19 +1021,19 @@ public class Controller {
 		if (l.getSelectionModel().getSelectedItem() != null && l.getSelectionModel().getSelectedItem() instanceof TodoList) {
 			t = (TodoList) l.getSelectionModel().getSelectedItem();
 		} else {
-			ErrorPrinter.printWarning("showDeleteList > Didn’t find selected item!");
+			ErrorPrinter.printWarning("showMoveTodoItem > Didn’t find selected item!");
 			return;
 		}
 		n = move.getScene().lookup("#source");
 		if (n == null || !(n instanceof TextField)) {
-			ErrorPrinter.printWarning("showDeleteList > Didn’t find element #source");
+			ErrorPrinter.printWarning("showMoveTodoItem > Didn’t find element #source");
 			return;
 		}
 		((TextField) n).setText(t.getName());
 		// populate dropdown
 		n = move.getScene().lookup("#destination");
 		if (n == null || !(n instanceof ChoiceBox)) {
-			ErrorPrinter.printWarning("showDeleteList > Didn’t find element #destination");
+			ErrorPrinter.printWarning("showMoveTodoItem > Didn’t find element #destination");
 			return;
 		}
 		ChoiceBox<TodoList> c = (ChoiceBox) n;
@@ -1037,14 +1041,14 @@ public class Controller {
 		// event handlers
 		n = move.getScene().lookup("#abort");
 		if (n == null || !(n instanceof Button)) {
-			ErrorPrinter.printWarning("showDeleteList > Didn’t find element #abort");
+			ErrorPrinter.printWarning("showMoveTodoItem > Didn’t find element #abort");
 			move.close();
 			return;
 		}
 		((Button) n).setOnAction(event -> move.close());
 		n = move.getScene().lookup("#move");
 		if (n == null || !(n instanceof Button)) {
-			ErrorPrinter.printWarning("showDeleteList > Didn’t find element #move");
+			ErrorPrinter.printWarning("showMoveTodoItem > Didn’t find element #move");
 			move.close();
 			return;
 		}
@@ -1052,7 +1056,7 @@ public class Controller {
 			// first add the item to the destination
 			TodoList list = c.getSelectionModel().getSelectedItem();
 			if (list == null) {
-				ErrorPrinter.printWarning("showDeleteList > Invalid selection!");
+				ErrorPrinter.printWarning("showMoveTodoItem > Invalid selection!");
 				this.updateStatusLine("Invalid selection!");
 				return;
 			}
@@ -1088,7 +1092,7 @@ public class Controller {
 			super.updateItem(item, empty);
 			if (!empty && item != null) {
 				if (item.isPrio() && !item.isDone()) {
-					this.setStyle("-fx-graphic:url(/de/t_battermann/dhbw/todolist/star.png);");
+					this.setStyle("-fx-graphic:url(/de/t_battermann/dhbw/todolist/images/rating.png);");
 				} else {
 					this.setStyle("-fx-graphic:null;");
 				}
