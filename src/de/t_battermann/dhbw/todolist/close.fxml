@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.image.*?>
 <?import javafx.geometry.*?>
 <?import javafx.scene.text.*?>
 <?import java.lang.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<TitledPane animated="false" collapsible="false" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" text="Close the program?" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/8.0.45">
+<TitledPane animated="false" collapsible="false" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" text="Close the program?" xmlns="http://javafx.com/javafx/8.0.45" xmlns:fx="http://javafx.com/fxml/1">
    <font>
       <Font name="System Bold" size="13.0" />
    </font>
@@ -17,13 +18,34 @@
                <VBox.margin>
                   <Insets bottom="10.0" />
                </VBox.margin>
+               <graphic>
+                  <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@images/dialog-cancel.png" />
+                     </image>
+                  </ImageView>
+               </graphic>
             </Button>
             <Button id="save" minWidth="250.0" mnemonicParsing="false" text="Yes, but save the changes" textFill="#0cb228">
                <VBox.margin>
                   <Insets bottom="10.0" />
                </VBox.margin>
+               <graphic>
+                  <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@images/document-save.png" />
+                     </image>
+                  </ImageView>
+               </graphic>
             </Button>
-            <Button id="close" minWidth="250.0" mnemonicParsing="false" text="Yes and discard the changes" textFill="#b20000" />
+            <Button id="close" minWidth="250.0" mnemonicParsing="false" text="Yes and discard the changes" textFill="#b20000">
+               <graphic>
+                  <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@images/window-close.png" />
+                     </image>
+                  </ImageView>
+               </graphic></Button>
          </children>
       </VBox>
    </content>

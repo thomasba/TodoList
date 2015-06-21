@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.image.*?>
 <?import javafx.scene.text.*?>
 <?import javafx.geometry.*?>
 <?import java.lang.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<TitledPane animated="false" collapsible="false" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" text="Change eMail" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/8.0.45">
+<TitledPane animated="false" collapsible="false" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" text="Change eMail" xmlns="http://javafx.com/javafx/8.0.45" xmlns:fx="http://javafx.com/fxml/1">
    <content>
       <VBox>
          <children>
@@ -35,8 +36,22 @@
                      <HBox.margin>
                         <Insets right="5.0" />
                      </HBox.margin>
+                     <graphic>
+                        <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@images/dialog-ok-apply.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
                   </Button>
-                  <Button id="abort" minWidth="150.0" mnemonicParsing="false" text="Abort" />
+                  <Button id="abort" minWidth="150.0" mnemonicParsing="false" text="Abort">
+                     <graphic>
+                        <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@images/dialog-cancel.png" />
+                           </image>
+                        </ImageView>
+                     </graphic></Button>
                </children>
             </HBox>
             <Label id="status" text="Change your eMail address" />

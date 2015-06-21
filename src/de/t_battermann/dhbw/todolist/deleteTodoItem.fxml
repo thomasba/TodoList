@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.image.*?>
 <?import javafx.scene.text.*?>
 <?import javafx.geometry.*?>
 <?import java.lang.*?>
@@ -14,8 +15,22 @@
                <HBox.margin>
                   <Insets right="5.0" />
                </HBox.margin>
+               <graphic>
+                  <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@images/dialog-ok-apply.png" />
+                     </image>
+                  </ImageView>
+               </graphic>
             </Button>
-            <Button id="no" cancelButton="true" defaultButton="true" minWidth="100.0" mnemonicParsing="false" text="No" />
+            <Button id="no" cancelButton="true" defaultButton="true" minWidth="100.0" mnemonicParsing="false" text="No">
+               <graphic>
+                  <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@images/dialog-cancel.png" />
+                     </image>
+                  </ImageView>
+               </graphic></Button>
          </children>
       </HBox>
    </content>

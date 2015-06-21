@@ -18,7 +18,7 @@
                <graphic>
                   <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
                      <image>
-                        <Image url="@save.png" />
+                        <Image url="@images/document-save.png" />
                      </image>
                   </ImageView>
                </graphic></Button>
@@ -26,7 +26,7 @@
                <graphic>
                   <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
                      <image>
-                        <Image url="@save.png" />
+                        <Image url="@images/document-save-as.png" />
                      </image>
                   </ImageView>
                </graphic></Button>
@@ -35,7 +35,7 @@
                <graphic>
                   <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
                      <image>
-                        <Image url="@password.png" />
+                        <Image url="@images/dialog-password.png" />
                      </image>
                   </ImageView>
                </graphic></Button>
@@ -43,13 +43,27 @@
                <graphic>
                   <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
                      <image>
-                        <Image url="@email.png" />
+                        <Image url="@images/mail-send.png" />
                      </image>
                   </ImageView>
                </graphic></Button>
-          <Button id="menuLogout" mnemonicParsing="false" text="Log out" />
+          <Button id="menuLogout" mnemonicParsing="false" text="Log out">
+               <graphic>
+                  <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@images/system-log-out.png" />
+                     </image>
+                  </ImageView>
+               </graphic></Button>
             <Separator orientation="VERTICAL" />
-            <Button id="menuClose" mnemonicParsing="false" text="Close" />
+            <Button id="menuClose" mnemonicParsing="false" text="Close">
+               <graphic>
+                  <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@images/window-close.png" />
+                     </image>
+                  </ImageView>
+               </graphic></Button>
         </items>
       </ToolBar>
       <SplitPane dividerPositions="0.333" prefHeight="160.0" prefWidth="200.0" VBox.vgrow="ALWAYS">
@@ -64,7 +78,7 @@
                            <graphic>
                               <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
                                  <image>
-                                    <Image url="@save.png" />
+                                    <Image url="@images/document-save.png" />
                                  </image>
                               </ImageView>
                            </graphic></Button>
@@ -76,7 +90,7 @@
                            <graphic>
                               <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
                                  <image>
-                                    <Image url="@add.png" />
+                                    <Image url="@images/list-add.png" />
                                  </image>
                               </ImageView>
                            </graphic></Button>
@@ -84,7 +98,7 @@
                            <graphic>
                               <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
                                  <image>
-                                    <Image url="@remove.png" />
+                                    <Image url="@images/list-remove.png" />
                                  </image>
                               </ImageView>
                            </graphic></Button>
@@ -92,7 +106,7 @@
                            <graphic>
                               <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
                                  <image>
-                                    <Image url="@rename.png" />
+                                    <Image url="@images/document-edit.png" />
                                  </image>
                               </ImageView>
                            </graphic></Button>
@@ -108,7 +122,7 @@
                            <graphic>
                               <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
                                  <image>
-                                    <Image url="@add.png" />
+                                    <Image url="@images/list-add.png" />
                                  </image>
                               </ImageView>
                            </graphic></Button>
@@ -116,7 +130,7 @@
                            <graphic>
                               <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
                                  <image>
-                                    <Image url="@done.png" />
+                                    <Image url="@images/dialog-ok-apply.png" />
                                  </image>
                               </ImageView>
                            </graphic></ToggleButton>
@@ -124,7 +138,7 @@
                            <graphic>
                               <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
                                  <image>
-                                    <Image url="@star.png" />
+                                    <Image url="@images/rating.png" />
                                  </image>
                               </ImageView>
                            </graphic></ToggleButton>
@@ -132,7 +146,7 @@
                            <graphic>
                               <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
                                  <image>
-                                    <Image url="@move.png" />
+                                    <Image url="@images/transform-move.png" />
                                  </image>
                               </ImageView>
                            </graphic></Button>
@@ -140,7 +154,7 @@
                            <graphic>
                               <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
                                  <image>
-                                    <Image url="@remove.png" />
+                                    <Image url="@images/list-remove.png" />
                                  </image>
                               </ImageView>
                            </graphic></Button>
@@ -149,7 +163,7 @@
                            <graphic>
                               <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
                                  <image>
-                                    <Image url="@toggle-done.png" />
+                                    <Image url="@images/dialog-ok.png" />
                                  </image>
                               </ImageView>
                            </graphic></ToggleButton>
@@ -191,7 +205,7 @@
                                        <graphic>
                                           <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
                                              <image>
-                                                <Image url="@save.png" />
+                                                <Image url="@images/document-save.png" />
                                              </image>
                                           </ImageView>
                                        </graphic></Button>

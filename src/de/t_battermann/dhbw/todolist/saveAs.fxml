@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.image.*?>
 <?import javafx.scene.text.*?>
 <?import javafx.geometry.*?>
 <?import java.lang.*?>
@@ -10,12 +11,19 @@
    <content>
       <HBox>
          <children>
-            <TextField id="filename">
+            <TextField id="filename" minWidth="250.0">
                <HBox.margin>
                   <Insets right="5.0" />
                </HBox.margin>
             </TextField>
-            <Button id="save" mnemonicParsing="false" text="Save" />
+            <Button id="save" mnemonicParsing="false" text="Save">
+               <graphic>
+                  <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@images/document-save.png" />
+                     </image>
+                  </ImageView>
+               </graphic></Button>
          </children>
       </HBox>
    </content>

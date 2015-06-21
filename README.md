@@ -18,9 +18,10 @@ A project for class "programming 2" at Baden-Wuerttemberg Cooperative State Univ
 
 ## Dependencies
 
-- [Apache Commons Lang](https://commons.apache.org/proper/commons-lang/)
 - [Apache Commons Validator](https://commons.apache.org/proper/commons-validator/)
 - [Apache Commons Codec](https://commons.apache.org/proper/commons-codec/download_codec.cgi)
+- [OpenCVS](http://sourceforge.net/projects/opencsv/)
+- [oxygen icons](https://github.com/rubenvb/oxygen-icons-svg)
 
 or simply:
 

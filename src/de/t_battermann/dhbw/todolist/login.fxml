@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.image.*?>
 <?import javafx.scene.text.*?>
 <?import javafx.geometry.*?>
 <?import java.lang.*?>
@@ -34,6 +35,13 @@
                            <VBox.margin>
                               <Insets top="5.0" />
                            </VBox.margin>
+                           <graphic>
+                              <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@images/dialog-password.png" />
+                                 </image>
+                              </ImageView>
+                           </graphic>
                         </Button>
                         <Label id="labelHints" prefHeight="15.0" prefWidth="477.0" text="Please enter your credentials">
                            <VBox.margin>
@@ -76,10 +84,17 @@
                               <TextField id="registerEmailRepeat" GridPane.columnIndex="1" GridPane.rowIndex="4" />
                            </children>
                         </GridPane>
-                        <Button id="registerButton" mnemonicParsing="false" prefHeight="25.0" prefWidth="482.0" text="Login" textAlignment="CENTER" VBox.vgrow="ALWAYS">
+                        <Button id="registerButton" mnemonicParsing="false" prefHeight="25.0" prefWidth="482.0" text="Create user" textAlignment="CENTER" VBox.vgrow="ALWAYS">
                            <VBox.margin>
                               <Insets top="5.0" />
                            </VBox.margin>
+                           <graphic>
+                              <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@images/list-add-user.png" />
+                                 </image>
+                              </ImageView>
+                           </graphic>
                         </Button>
                         <Label id="labelHintsCreateNewUser" prefHeight="15.0" prefWidth="477.0" text="Create a new user">
                            <VBox.margin>
