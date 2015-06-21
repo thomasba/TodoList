@@ -14,11 +14,39 @@
    <children>
       <ToolBar>
         <items>
-            <Button id="menuSave" mnemonicParsing="false" text="Save" />
-          <Button id="menuSaveAs" mnemonicParsing="false" text="Save as ..." />
+            <Button id="menuSave" mnemonicParsing="false" text="Save">
+               <graphic>
+                  <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@save.png" />
+                     </image>
+                  </ImageView>
+               </graphic></Button>
+          <Button id="menuSaveAs" mnemonicParsing="false" text="Save as ...">
+               <graphic>
+                  <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@save.png" />
+                     </image>
+                  </ImageView>
+               </graphic></Button>
             <Separator orientation="VERTICAL" />
-            <Button id="menuChangePassword" mnemonicParsing="false" text="Cange password" />
-            <Button id="menuChangeEmail" mnemonicParsing="false" text="Change eMail" />
+            <Button id="menuChangePassword" mnemonicParsing="false" text="Cange password">
+               <graphic>
+                  <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@password.png" />
+                     </image>
+                  </ImageView>
+               </graphic></Button>
+            <Button id="menuChangeEmail" mnemonicParsing="false" text="Change eMail">
+               <graphic>
+                  <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@email.png" />
+                     </image>
+                  </ImageView>
+               </graphic></Button>
           <Button id="menuLogout" mnemonicParsing="false" text="Log out" />
             <Separator orientation="VERTICAL" />
             <Button id="menuClose" mnemonicParsing="false" text="Close" />
@@ -32,14 +60,42 @@
                   <ToolBar id="todoListToolBar" visible="false">
                     <items>
                         <TextField id="todoListNewName" />
-                      <Button id="todoListNewNameSave" mnemonicParsing="false" text="Save" />
+                      <Button id="todoListNewNameSave" mnemonicParsing="false" text="Save">
+                           <graphic>
+                              <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@save.png" />
+                                 </image>
+                              </ImageView>
+                           </graphic></Button>
                     </items>
                   </ToolBar>
                   <ToolBar>
                     <items>
-                      <Button id="todoListNew" mnemonicParsing="false" text="New" />
-                        <Button id="todoListDelete" mnemonicParsing="false" text="Delete" />
-                        <Button id="todoListEdit" mnemonicParsing="false" text="Edit" />
+                      <Button id="todoListNew" mnemonicParsing="false" text="New">
+                           <graphic>
+                              <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@add.png" />
+                                 </image>
+                              </ImageView>
+                           </graphic></Button>
+                        <Button id="todoListDelete" mnemonicParsing="false" text="Delete">
+                           <graphic>
+                              <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@remove.png" />
+                                 </image>
+                              </ImageView>
+                           </graphic></Button>
+                        <Button id="todoListEdit" mnemonicParsing="false" text="Edit">
+                           <graphic>
+                              <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@rename.png" />
+                                 </image>
+                              </ImageView>
+                           </graphic></Button>
                     </items>
                   </ToolBar>
                </children>
@@ -48,13 +104,55 @@
                <children>
                   <ToolBar prefHeight="40.0" prefWidth="200.0">
                     <items>
-                      <Button id="todoNew" mnemonicParsing="false" text="New" />
-                        <ToggleButton id="todoToggleDone" mnemonicParsing="false" text="done" />
-                        <ToggleButton id="todoToggleStar" mnemonicParsing="false" text="star" />
-                        <Button id="todoMove" mnemonicParsing="false" text="move" />
-                        <Button id="todoDelete" mnemonicParsing="false" text="delete" />
+                      <Button id="todoNew" mnemonicParsing="false" text="New">
+                           <graphic>
+                              <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@add.png" />
+                                 </image>
+                              </ImageView>
+                           </graphic></Button>
+                        <ToggleButton id="todoToggleDone" mnemonicParsing="false" text="done">
+                           <graphic>
+                              <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@done.png" />
+                                 </image>
+                              </ImageView>
+                           </graphic></ToggleButton>
+                        <ToggleButton id="todoToggleStar" mnemonicParsing="false" text="star">
+                           <graphic>
+                              <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@star.png" />
+                                 </image>
+                              </ImageView>
+                           </graphic></ToggleButton>
+                        <Button id="todoMove" mnemonicParsing="false" text="move">
+                           <graphic>
+                              <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@move.png" />
+                                 </image>
+                              </ImageView>
+                           </graphic></Button>
+                        <Button id="todoDelete" mnemonicParsing="false" text="delete">
+                           <graphic>
+                              <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@remove.png" />
+                                 </image>
+                              </ImageView>
+                           </graphic></Button>
                         <Separator orientation="VERTICAL" />
-                        <ToggleButton id="todosShowDone" mnemonicParsing="false" selected="true" text="show done" />
+                        <ToggleButton id="todosShowDone" mnemonicParsing="false" selected="true" text="show done">
+                           <graphic>
+                              <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@toggle-done.png" />
+                                 </image>
+                              </ImageView>
+                           </graphic></ToggleButton>
                     </items>
                   </ToolBar>
                   <SplitPane dividerPositions="0.6" orientation="VERTICAL" VBox.vgrow="ALWAYS">
@@ -89,7 +187,14 @@
                                           </HBox>
                                        </children>
                                     </GridPane>
-                                    <Button id="todoDetailSave" minWidth="150.0" mnemonicParsing="false" text="Save" VBox.vgrow="ALWAYS" />
+                                    <Button id="todoDetailSave" minWidth="150.0" mnemonicParsing="false" text="Save" VBox.vgrow="ALWAYS">
+                                       <graphic>
+                                          <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                                             <image>
+                                                <Image url="@save.png" />
+                                             </image>
+                                          </ImageView>
+                                       </graphic></Button>
                                  </children>
                               </VBox>
                            </content>

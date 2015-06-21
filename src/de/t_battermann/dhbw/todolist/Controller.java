@@ -259,7 +259,7 @@ public class Controller {
 	private void showMainWindow() {
 		primaryStage.setTitle("TodoList :: " + currentUser.getUsername() +  " > Default");
 		try {
-			primaryStage.setScene(new Scene(FXMLLoader.load(getClass().getResource("main.fxml")),600,500));
+			primaryStage.setScene(new Scene(FXMLLoader.load(getClass().getResource("main.fxml")),950,650));
 		} catch (IOException e) {
 			ErrorPrinter.printError("showMainWindow > Failed to open window 'main'! Goodbye!");
 			e.printStackTrace();
