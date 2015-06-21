@@ -28,5 +28,14 @@
     <orderEntry type="library" name="commons-codec" level="project" />
     <orderEntry type="library" name="commons-validator" level="project" />
     <orderEntry type="library" name="jfxrt" level="project" />
+    <orderEntry type="module-library" exported="">
+      <library>
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/ext/opencsv.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
   </component>
 </module>
